@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +51,13 @@
         
         /* Modal & Form Overlay */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: #111b21; padding: 20px; border-radius: 12px; width: 90%; max-width: 380px; border: 1px solid #222d34; max-height: 90vh; overflow-y: auto; text-align: center; }
+        .modal-content { background: #111b21; padding: 20px; border-radius: 12px; width: 90%; max-width: 380px; border: 1px solid #222d34; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
+        
+        /* Three Dot Menu Dropdown inside Chat Info */
+        .menu-dropdown { position: absolute; right: 20px; top: 50px; background: #233138; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); display: none; z-index: 10; width: 140px; }
+        .menu-dropdown div { padding: 10px 14px; font-size: 13px; cursor: pointer; color: #e9edef; border-bottom: 1px solid #2a3942; }
+        .menu-dropdown div:hover { background: #182229; }
+        .menu-dropdown div.danger { color: #ef4444; }
     </style>
 </head>
 <body>
@@ -61,10 +67,10 @@
         <div class="app-header">
             <div class="app-title">ConnectSphere <span class="vip-tag" id="vipStatus">VIP</span></div>
             <div class="header-right">
-                <div class="token-badge" onclick="watchAdForToken()" title="Click to watch ad & earn token">🪙 <span id="tokenCount">3</span></div>
+                <div class="token-badge" onclick="watchAdForToken()" title="Earn Token">🪙 <span id="tokenCount">3</span></div>
                 <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
-                    <option value="bn">বাংলা</option>
                     <option value="en" selected>English</option>
+                    <option value="bn">বাংলা</option>
                     <option value="ar">العربية</option>
                 </select>
             </div>
@@ -109,19 +115,19 @@
                     <div style="font-size: 12px; color: #8696a0; margin-bottom: 8px;" id="txtRecent">RECENT CONVERSATIONS</div>
                     
                     <div class="chat-list" id="chatListContainer">
-                        <div class="chat-item" onclick="openCallModal('Family (Home)', '+96878427384', 'Oman')">
+                        <div class="chat-item" onclick="openChatInfo('Family (Home)', '+96878427384', 'Oman')">
                             <div class="chat-avatar">👨‍👩‍👧</div>
                             <div class="chat-info">
                                 <div class="chat-name">Family (Home)</div>
-                                <div class="chat-msg">Online - Direct Phone Call</div>
+                                <div class="chat-msg" id="msgFamily">Online - Direct Phone Call & Members</div>
                             </div>
                         </div>
 
-                        <div class="chat-item" onclick="openCallModal('International / Local Peer', '+8801817235846', 'Bangladesh')">
+                        <div class="chat-item" onclick="openChatInfo('International / Local Peer', '+8801817235846', 'Bangladesh')">
                             <div class="chat-avatar" style="background: #3b82f6;">🤝</div>
                             <div class="chat-info">
                                 <div class="chat-name">International / Local Peer</div>
-                                <div class="chat-msg">Tap to direct dial phone number</div>
+                                <div class="chat-msg" id="msgPeer">Tap to manage connection & dial</div>
                             </div>
                         </div>
                     </div>
@@ -129,31 +135,31 @@
 
                 <!-- 2. UPDATES TAB -->
                 <div id="tabContentUpdates" class="tab-pane hidden">
-                    <h4 style="color: #00a884; margin-top:0;">Status & Channels</h4>
+                    <h4 style="color: #00a884; margin-top:0;" id="txtStatusHead">Status & Channels</h4>
                     <div class="chat-item" onclick="openCustomPopup('Status', 'Opening status update feed...')">
                         <div class="chat-avatar" style="background: #8b5cf6;">➕</div>
                         <div class="chat-info">
-                            <div class="chat-name">Add Status</div>
-                            <div class="chat-msg">Share an update with peers</div>
+                            <div class="chat-name" id="txtAddStatus">Add Status</div>
+                            <div class="chat-msg" id="txtShareUpdate">Share an update with peers</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3. COMMUNITIES TAB -->
                 <div id="tabContentCommunities" class="tab-pane hidden">
-                    <h4 style="color: #00a884; margin-top:0;">Communities</h4>
-                    <p style="color: #8696a0; font-size: 13px;">Bring together topic-based groups easily.</p>
-                    <button onclick="openNewGroupModal()">Start your community</button>
+                    <h4 style="color: #00a884; margin-top:0;" id="txtCommHead">Communities</h4>
+                    <p style="color: #8696a0; font-size: 13px;" id="txtCommDesc">Bring together topic-based groups easily.</p>
+                    <button onclick="openNewGroupModal()" id="btnStartComm">Start your community</button>
                 </div>
 
                 <!-- 4. CALLS TAB -->
                 <div id="tabContentCalls" class="tab-pane hidden">
-                    <h4 style="color: #00a884; margin-top:0;">Recent Calls</h4>
-                    <div class="chat-item" onclick="openCallModal('Direct Phone Call Log', '+96878427384', 'Oman')">
+                    <h4 style="color: #00a884; margin-top:0;" id="txtCallHead">Recent Calls</h4>
+                    <div class="chat-item" onclick="openChatInfo('Direct Phone Call Log', '+96878427384', 'Oman')">
                         <div class="chat-avatar" style="background: #e11d48;">📞</div>
                         <div class="chat-info">
                             <div class="chat-name">Direct Phone Call Log</div>
-                            <div class="chat-msg">Outgoing voice call (No video)</div>
+                            <div class="chat-msg" id="txtVoiceLog">Outgoing voice call (No video)</div>
                         </div>
                     </div>
                 </div>
@@ -167,38 +173,38 @@
             <div class="whatsapp-bottom-nav">
                 <div class="nav-item active" id="navChats" onclick="switchTab('chats')">
                     <span class="icon">💬</span>
-                    <span>Chats</span>
+                    <span id="tabNameChats">Chats</span>
                 </div>
                 <div class="nav-item" id="navUpdates" onclick="switchTab('updates')">
                     <span class="icon">🔄</span>
-                    <span>Updates</span>
+                    <span id="tabNameUpdates">Updates</span>
                 </div>
                 <div class="nav-item" id="navCommunities" onclick="switchTab('communities')">
                     <span class="icon">👥</span>
-                    <span>Communities</span>
+                    <span id="tabNameCommunities">Communities</span>
                 </div>
                 <div class="nav-item" id="navCalls" onclick="switchTab('calls')">
                     <span class="icon">📞</span>
-                    <span>Calls</span>
+                    <span id="tabNameCalls">Calls</span>
                 </div>
             </div>
         </div>
 
         <!-- 1. Action Menu Modal (+) -->
         <div id="actionMenuModal" class="modal hidden">
-            <div class="modal-content">
-                <h3 style="color: #00a884; margin-top:0;">Select Action</h3>
-                <button onclick="closeModal(); openNewGroupModal();">👥 New Group / Community</button>
-                <button onclick="closeModal(); openNewContactModal();">👤 New Contact</button>
-                <button onclick="closeModal(); openDirectDialModal();">📞 Direct Dial Number</button>
-                <button style="background: #334155; margin-top: 10px;" onclick="closeModal()">Cancel</button>
+            <div class="modal-content" style="text-align: center;">
+                <h3 style="color: #00a884; margin-top:0;" id="txtSelectAction">Select Action</h3>
+                <button onclick="closeModal(); openNewGroupModal();" id="btnNewGroupMenu">👥 New Group / Community</button>
+                <button onclick="closeModal(); openNewContactModal();" id="btnNewContactMenu">👤 New Contact</button>
+                <button onclick="closeModal(); openDirectDialModal();" id="btnDirectDialMenu">📞 Direct Dial Number</button>
+                <button style="background: #334155; margin-top: 10px;" onclick="closeModal()" id="btnCancelMenu">Cancel</button>
             </div>
         </div>
 
         <!-- 2. New Contact Modal -->
         <div id="newContactModal" class="modal hidden">
-            <div class="modal-content" style="text-align: left;">
-                <h3 style="color: #00a884; margin-top:0; text-align: center;">Add New Contact</h3>
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtAddContactTitle">Add New Contact</h3>
                 <input type="text" id="newContactFirstName" placeholder="First name">
                 <input type="text" id="newContactLastName" placeholder="Last name">
                 <select id="newContactCountry">
@@ -208,31 +214,66 @@
                     <option value="ae">UAE (+971)</option>
                 </select>
                 <input type="tel" id="newContactPhone" placeholder="Phone number">
-                <button onclick="saveNewContact()">Save Contact</button>
-                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()">Cancel</button>
+                <button onclick="saveNewContact()" id="btnSaveContact">Save Contact</button>
+                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()" id="btnCancelContact">Cancel</button>
             </div>
         </div>
 
         <!-- 3. New Group Modal -->
         <div id="newGroupModal" class="modal hidden">
-            <div class="modal-content" style="text-align: left;">
-                <h3 style="color: #00a884; margin-top:0; text-align: center;">Create New Group</h3>
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtCreateGroupTitle">Create New Group</h3>
                 <input type="text" id="newGroupName" placeholder="Group subject / name">
                 <input type="text" id="newGroupDesc" placeholder="Group description (optional)">
-                <button onclick="saveNewGroup()">Create Group</button>
-                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()">Cancel</button>
+                <button onclick="saveNewGroup()" id="btnCreateGroup">Create Group</button>
+                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()" id="btnCancelGroup">Cancel</button>
             </div>
         </div>
 
-        <!-- 4. Custom Call / Info Modal (Replaces browser alert/prompt) -->
-        <div id="customModal" class="modal hidden">
+        <!-- 4. WhatsApp Chat Info & Management Modal (With Three Dot Menu & Member Connect) -->
+        <div id="chatInfoModal" class="modal hidden">
             <div class="modal-content">
-                <h3 id="customModalTitle" style="color: #00a884; margin-top:0;">Call Connect</h3>
+                <!-- Header with Title and Three-Dot Menu Button -->
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3942; padding-bottom: 10px; margin-bottom: 12px;">
+                    <h3 id="infoChatName" style="color: #00a884; margin: 0; font-size: 16px;">Chat Info</h3>
+                    <div style="cursor: pointer; font-size: 18px; padding: 0 8px; color: #8696a0;" onclick="toggleMenuDropdown()">⋮</div>
+                </div>
+
+                <!-- Three Dot Dropdown Menu -->
+                <div id="menuDropdown" class="menu-dropdown">
+                    <div onclick="blockContact()" id="menuBlock" class="danger">🚫 Block Contact</div>
+                    <div onclick="clearChatLog()" id="menuClear">🧹 Clear Messages</div>
+                    <div onclick="exportChat()" id="menuExport">📥 Export Chat</div>
+                </div>
+
+                <div id="infoChatDetails" style="font-size: 13px; color: #e9edef; line-height: 1.6;">
+                    <!-- Details populated dynamically -->
+                </div>
+
+                <!-- Member Connection Section -->
+                <div style="margin-top: 15px; background: #202c33; padding: 10px; border-radius: 8px;">
+                    <div style="font-size: 12px; font-weight: bold; color: #00a884; margin-bottom: 6px;" id="txtConnectMember">Connect Member to this Call/Chat:</div>
+                    <input type="text" id="connectMemberName" placeholder="Member Name" style="margin-bottom: 6px; padding: 6px; font-size: 12px;">
+                    <input type="tel" id="connectMemberPhone" placeholder="Member Phone Number (+968...)" style="margin-bottom: 6px; padding: 6px; font-size: 12px;">
+                    <button onclick="addConnectedMember()" style="padding: 6px; font-size: 12px; background: #005c4b;" id="btnAddMember">Add Connection</button>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button id="infoStartCallBtn" style="flex: 1; background: #00a884;" onclick="executeCallFromInfo()">📞 Start Call</button>
+                    <button style="flex: 1; background: #334155;" onclick="closeModal()" id="infoCloseBtn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. General Custom Alert Modal -->
+        <div id="customModal" class="modal hidden">
+            <div class="modal-content" style="text-align: center;">
+                <h3 id="customModalTitle" style="color: #00a884; margin-top:0;">Notification</h3>
                 <p id="customModalDesc" style="color: #e9edef; font-size: 14px; margin: 15px 0;"></p>
                 <div id="customModalInputArea"></div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button id="customModalConfirmBtn" style="flex: 1;" onclick="executeModalAction()">Confirm</button>
-                    <button style="flex: 1; background: #334155;" onclick="closeModal()">Cancel</button>
+                    <button id="customModalConfirmBtn" style="flex: 1;" onclick="executeModalAction()">OK</button>
+                    <button style="flex: 1; background: #334155;" onclick="closeModal()" id="customModalCancelBtn">Cancel</button>
                 </div>
             </div>
         </div>
@@ -242,19 +283,166 @@
     <script>
         let currentUser = null;
         let pendingActionCallback = null;
+        let activeChatData = { name: '', number: '', country: '', connectedMembers: [] };
 
+        // Multilingual Dictionary
         const translations = {
-            en: { welcome: "Welcome to ConnectSphere", sub: "Enter your details to start messaging & get 3 Free Tokens.", btnLogin: "Agree & Continue" },
-            bn: { welcome: "স্বাগতম ConnectSphere-এ", sub: "মেসেজিং শুরু করতে এবং ৩টি ফ্রি টোকেন পেতে তথ্য দিন।", btnLogin: "সম্মত হোন ও এগিয়ে যান" },
-            ar: { welcome: "مرحباً بك في ConnectSphere", sub: "أدخل بياناتك للبدء والحصول على 3 رموز.", btnLogin: "موافقة ومتابعة" }
+            en: {
+                welcome: "Welcome to ConnectSphere",
+                sub: "Enter your details to start messaging & get 3 Free Tokens.",
+                btnLogin: "Agree & Continue",
+                recent: "RECENT CONVERSATIONS",
+                msgFamily: "Online - Direct Phone Call & Members",
+                msgPeer: "Tap to manage connection & dial",
+                statusHead: "Status & Channels",
+                addStatus: "Add Status",
+                shareUpdate: "Share an update with peers",
+                commHead: "Communities",
+                commDesc: "Bring together topic-based groups easily.",
+                startComm: "Start your community",
+                callHead: "Recent Calls",
+                voiceLog: "Outgoing voice call (No video)",
+                tabChats: "Chats",
+                tabUpdates: "Updates",
+                tabCommunities: "Communities",
+                tabCalls: "Calls",
+                selectAction: "Select Action",
+                newGroupMenu: "👥 New Group / Community",
+                newContactMenu: "👤 New Contact",
+                directDialMenu: "📞 Direct Dial Number",
+                cancelMenu: "Cancel",
+                addContactTitle: "Add New Contact",
+                saveContact: "Save Contact",
+                cancelContact: "Cancel",
+                createGroupTitle: "Create New Group",
+                createGroup: "Create Group",
+                cancelGroup: "Cancel",
+                connectMemberLabel: "Connect Member to this Call/Chat:",
+                addMemberBtn: "Add Connection",
+                startCallBtn: "📞 Start Call",
+                closeBtn: "Close",
+                menuBlock: "🚫 Block Contact",
+                menuClear: "🧹 Clear Messages",
+                menuExport: "📥 Export Chat"
+            },
+            bn: {
+                welcome: "স্বাগতম ConnectSphere-এ",
+                sub: "মেসেজিং শুরু করতে এবং ৩টি ফ্রি টোকেন পেতে তথ্য দিন।",
+                btnLogin: "সম্মত হোন ও এগিয়ে যান",
+                recent: "সাম্প্রতিক কথোপকথন",
+                msgFamily: "অনলাইন - ডাইরেক্ট ফোন কল ও মেম্বারগণ",
+                msgPeer: "কানেকশন ও ডায়াল ম্যানেজ করতে ট্যাপ করুন",
+                statusHead: "স্ট্যাটাস ও চ্যানেল",
+                addStatus: "স্ট্যাটাস যোগ করুন",
+                shareUpdate: "পিয়ারদের সাথে আপডেট শেয়ার করুন",
+                commHead: "কমিউনিটি",
+                commDesc: "সহজেই টপিক-ভিত্তিক গ্রুপগুলো এক করুন।",
+                startComm: "কমিউনিটি শুরু করুন",
+                callHead: "সাম্প্রতিক কলসমূহ",
+                voiceLog: "আউটগোয়িং ভয়েস কল (ভিডিও নেই)",
+                tabChats: "চ্যাট",
+                tabUpdates: "আপডেট",
+                tabCommunities: "কমিউনিটি",
+                tabCalls: "কল",
+                selectAction: "অ্যাকশন সিলেক্ট করুন",
+                newGroupMenu: "👥 নতুন গ্রুপ / কমিউনিটি",
+                newContactMenu: "👤 নতুন কন্টাক্ট",
+                directDialMenu: "📞 সরাসরি নাম্বার ডায়াল",
+                cancelMenu: "বাতিল",
+                addContactTitle: "নতুন কন্টাক্ট যোগ করুন",
+                saveContact: "কন্টাক্ট সেভ করুন",
+                cancelContact: "বাতিল",
+                createGroupTitle: "নতুন গ্রুপ তৈরি করুন",
+                createGroup: "গ্রুপ তৈরি করুন",
+                cancelGroup: "বাতিল",
+                connectMemberLabel: "এই কল বা চ্যাটে মেম্বার কানেক্ট করুন:",
+                addMemberBtn: "কানেকশন যোগ করুন",
+                startCallBtn: "📞 কল শুরু করুন",
+                closeBtn: "বন্ধ করুন",
+                menuBlock: "🚫 কন্টাক্ট ব্লক করুন",
+                menuClear: "🧹 মেসেজ ক্লিয়ার করুন",
+                menuExport: "📥 চ্যাট এক্সপোর্ট করুন"
+            },
+            ar: {
+                welcome: "مرحباً بك في ConnectSphere",
+                sub: "أدخل بياناتك للبدء والحصول على 3 رموز.",
+                btnLogin: "موافقة ومتابعة",
+                recent: "المحادثات الأخيرة",
+                msgFamily: "متصل - مكالمة هاتفية مباشرة والأعضاء",
+                msgPeer: "انقر لإدارة الاتصال والطلب",
+                statusHead: "الحالة والقنوات",
+                addStatus: "إضافة حالة",
+                shareUpdate: "شارك التحديثات مع الزملاء",
+                commHead: "المجتمعات",
+                commDesc: "اجمع المجموعات معاً بسهولة.",
+                startComm: "ابدأ مجتمعك",
+                callHead: "المكالمات الأخيرة",
+                voiceLog: "مكالمة صوتية صادرة",
+                tabChats: "المحادثات",
+                tabUpdates: "التحديثات",
+                tabCommunities: "المجتمعات",
+                tabCalls: "المكالمات",
+                selectAction: "حدد الإجراء",
+                newGroupMenu: "👥 مجموعة / مجتمع جديد",
+                newContactMenu: "👤 جهة اتصال جديدة",
+                directDialMenu: "📞 طلب رقم مباشر",
+                cancelMenu: "إلغاء",
+                addContactTitle: "إضافة جهة اتصال",
+                saveContact: "حفظ جهة الاتصال",
+                cancelContact: "إلغاء",
+                createGroupTitle: "إنشاء مجموعة جديدة",
+                createGroup: "إنشاء مجموعة",
+                cancelGroup: "إلغاء",
+                connectMemberLabel: "ربط عضو بهذه المكالمة/المحادثة:",
+                addMemberBtn: "إضافة اتصال",
+                startCallBtn: "📞 بدء المكالمة",
+                closeBtn: "إغلاق",
+                menuBlock: "🚫 حظر جهة الاتصال",
+                menuClear: "🧹 مسح الرسائل",
+                menuExport: "📥 تصدير الدردشة"
+            }
         };
 
         function changeLanguage() {
             let lang = document.getElementById('appLanguage').value;
             let t = translations[lang] || translations['en'];
+            
             document.getElementById('txtWelcome').innerText = t.welcome;
             document.getElementById('txtSub').innerText = t.sub;
             document.getElementById('btnLogin').innerText = t.btnLogin;
+            document.getElementById('txtRecent').innerText = t.recent;
+            document.getElementById('msgFamily').innerText = t.msgFamily;
+            document.getElementById('msgPeer').innerText = t.msgPeer;
+            document.getElementById('txtStatusHead').innerText = t.statusHead;
+            document.getElementById('txtAddStatus').innerText = t.addStatus;
+            document.getElementById('txtShareUpdate').innerText = t.shareUpdate;
+            document.getElementById('txtCommHead').innerText = t.commHead;
+            document.getElementById('txtCommDesc').innerText = t.commDesc;
+            document.getElementById('btnStartComm').innerText = t.startComm;
+            document.getElementById('txtCallHead').innerText = t.callHead;
+            document.getElementById('txtVoiceLog').innerText = t.voiceLog;
+            document.getElementById('tabNameChats').innerText = t.tabChats;
+            document.getElementById('tabNameUpdates').innerText = t.tabUpdates;
+            document.getElementById('tabNameCommunities').innerText = t.tabCommunities;
+            document.getElementById('tabNameCalls').innerText = t.tabCalls;
+            document.getElementById('txtSelectAction').innerText = t.selectAction;
+            document.getElementById('btnNewGroupMenu').innerText = t.newGroupMenu;
+            document.getElementById('btnNewContactMenu').innerText = t.newContactMenu;
+            document.getElementById('btnDirectDialMenu').innerText = t.directDialMenu;
+            document.getElementById('btnCancelMenu').innerText = t.cancelMenu;
+            document.getElementById('txtAddContactTitle').innerText = t.addContactTitle;
+            document.getElementById('btnSaveContact').innerText = t.saveContact;
+            document.getElementById('btnCancelContact').innerText = t.cancelContact;
+            document.getElementById('txtCreateGroupTitle').innerText = t.createGroupTitle;
+            document.getElementById('btnCreateGroup').innerText = t.createGroup;
+            document.getElementById('btnCancelGroup').innerText = t.cancelGroup;
+            document.getElementById('txtConnectMember').innerText = t.connectMemberLabel;
+            document.getElementById('btnAddMember').innerText = t.addMemberBtn;
+            document.getElementById('infoStartCallBtn').innerText = t.startCallBtn;
+            document.getElementById('infoCloseBtn').innerText = t.closeBtn;
+            document.getElementById('menuBlock').innerText = t.menuBlock;
+            document.getElementById('menuClear').innerText = t.menuClear;
+            document.getElementById('menuExport').innerText = t.menuExport;
         }
 
         async function registerUser() {
@@ -298,7 +486,9 @@
             document.getElementById('actionMenuModal').classList.add('hidden');
             document.getElementById('newContactModal').classList.add('hidden');
             document.getElementById('newGroupModal').classList.add('hidden');
+            document.getElementById('chatInfoModal').classList.add('hidden');
             document.getElementById('customModal').classList.add('hidden');
+            document.getElementById('menuDropdown').style.display = 'none';
             pendingActionCallback = null;
         }
 
@@ -314,68 +504,118 @@
             document.getElementById('newGroupModal').classList.remove('hidden');
         }
 
-        function openCustomPopup(title, msg) {
-            document.getElementById('customModalTitle').innerText = title;
-            document.getElementById('customModalDesc').innerText = msg;
-            document.getElementById('customModalInputArea').innerHTML = '';
-            document.getElementById('customModalConfirmBtn').innerText = 'OK';
-            pendingActionCallback = () => closeModal();
-            document.getElementById('customModal').classList.remove('hidden');
+        function toggleMenuDropdown() {
+            let menu = document.getElementById('menuDropdown');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        function openCallModal(name, number, country) {
+        // WhatsApp Style Chat Info / Management View
+        function openChatInfo(name, number, country) {
+            activeChatData = { name, number, country, connectedMembers: activeChatData.connectedMembers || [] };
+            
+            document.getElementById('infoChatName').innerText = name;
+            renderChatInfoDetails();
+            document.getElementById('chatInfoModal').classList.remove('hidden');
+        }
+
+        function renderChatInfoDetails() {
+            let lang = document.getElementById('appLanguage').value;
+            let membersHtml = activeChatData.connectedMembers.length > 0 
+                ? activeChatData.connectedMembers.map(m => `• ${m.name} (${m.phone})`).join('<br>') 
+                : (lang === 'bn' ? 'কোনো অতিরিক্ত মেম্বার কানেক্ট করা নেই।' : 'No additional members connected.');
+
+            let detailsHtml = `
+                <div><b>Phone / ID:</b> ${activeChatData.number}</div>
+                <div><b>Country / Region:</b> ${activeChatData.country}</div>
+                <div style="margin-top: 8px;"><b>Connected Members:</b><br>${membersHtml}</div>
+            `;
+            document.getElementById('infoChatDetails').innerHTML = detailsHtml;
+        }
+
+        function addConnectedMember() {
+            let mName = document.getElementById('connectMemberName').value;
+            let mPhone = document.getElementById('connectMemberPhone').value;
+            let lang = document.getElementById('appLanguage').value;
+
+            if(!mName || !mPhone) {
+                alert(lang === 'bn' ? 'মেম্বারের নাম ও ফোন নাম্বার লিখুন!' : 'Please enter member name and phone!');
+                return;
+            }
+
+            activeChatData.connectedMembers.push({ name: mName, phone: mPhone });
+            document.getElementById('connectMemberName').value = '';
+            document.getElementById('connectMemberPhone').value = '';
+            renderChatInfoDetails();
+            alert(lang === 'bn' ? 'সফলভাবে মেম্বার কানেক্ট করা হয়েছে!' : 'Member successfully connected to this chat/call!');
+        }
+
+        function executeCallFromInfo() {
             let tokens = parseInt(document.getElementById('tokenCount').innerText);
-            let msg = '';
+            let lang = document.getElementById('appLanguage').value;
+            let country = activeChatData.country;
+            let number = activeChatData.number;
+            let name = activeChatData.name;
             let canCall = false;
+            let callMsg = '';
 
             if(tokens > 0) {
-                msg = `🌐 গ্লোবাল ডাইরেক্ট কল কানেক্ট হচ্ছে ${number} (${name}) নাম্বারে!\n(১টি টোকেন কেটে নেওয়া হবে। অডিও কল মোড)`;
                 canCall = true;
+                callMsg = lang === 'bn' ? `🌐 গ্লোবাল ডাইরেক্ট কল কানেক্ট হচ্ছে ${number} (${name}) নাম্বারে!\n(১টি টোকেন কেটে নেওয়া হয়েছে।)` : `🌐 Connecting Global Direct Call to ${number} (${name})!\n(1 Token deducted.)`;
             } else {
-                if(country.toLowerCase() === currentUser.country.toLowerCase() || country === 'Oman') {
-                    msg = `🏠 টোকেন শেষ! তবে আপনার লোকাল দেশ (${currentUser.country.toUpperCase()}) হওয়ায় ফ্রি মোডে সরাসরি কল কানেক্ট হচ্ছে: ${number}`;
+                if(country.toLowerCase() === currentUser.country.toLowerCase() || country === 'Oman' || country === 'Global') {
                     canCall = true;
+                    callMsg = lang === 'bn' ? `🏠 টোকেন শেষ! তবে লোকাল দেশ হওয়ায় ফ্রি মোডে কল কানেক্ট হচ্ছে: ${number}` : `🏠 Tokens ended! Connecting via free local mode: ${number}`;
                 } else {
-                    msg = `❌ টোকেন শেষ! বাইরের দেশের কলের জন্য টোকেন প্রয়োজন। টোকেন পেতে ওপরের কয়েন আইকনে ক্লিক করে অ্যাড দেখুন।`;
                     canCall = false;
+                    callMsg = lang === 'bn' ? `❌ টোকেন শেষ! বাইরের দেশের কলের জন্য কয়েন আইকনে ক্লিক করে টোকেন নিন।` : `❌ Out of tokens! Get tokens by watching ads via coin icon.`;
                 }
             }
 
-            document.getElementById('customModalTitle').innerText = `Call: ${name}`;
-            document.getElementById('customModalDesc').innerText = msg;
-            document.getElementById('customModalInputArea').innerHTML = '';
-            
-            let btn = document.getElementById('customModalConfirmBtn');
             if(canCall) {
-                btn.innerText = '📞 Start Call';
-                pendingActionCallback = () => {
-                    currentUser.tokens = Math.max(0, currentUser.tokens - 1);
-                    document.getElementById('tokenCount').innerText = currentUser.tokens;
-                    closeModal();
-                    alert(`✅ সফলভাবে কল ডায়াল করা হয়েছে: ${number}`);
-                };
+                currentUser.tokens = Math.max(0, currentUser.tokens - 1);
+                document.getElementById('tokenCount').innerText = currentUser.tokens;
+                closeModal();
+                alert(callMsg);
             } else {
-                btn.innerText = 'Close';
-                pendingActionCallback = () => closeModal();
+                alert(callMsg);
             }
+        }
 
-            document.getElementById('customModal').classList.remove('hidden');
+        function blockContact() {
+            let lang = document.getElementById('appLanguage').value;
+            alert(lang === 'bn' ? `🚫 ${activeChatData.name} কে ব্লক করা হয়েছে!` : `🚫 ${activeChatData.name} has been blocked!`);
+            closeModal();
+        }
+
+        function clearChatLog() {
+            let lang = document.getElementById('appLanguage').value;
+            activeChatData.connectedMembers = [];
+            renderChatInfoDetails();
+            alert(lang === 'bn' ? '🧹 চ্যাট হিস্ট্রি ক্লিয়ার করা হয়েছে!' : '🧹 Chat history cleared!');
+            document.getElementById('menuDropdown').style.display = 'none';
+        }
+
+        function exportChat() {
+            let lang = document.getElementById('appLanguage').value;
+            alert(lang === 'bn' ? '📥 চ্যাট সফলভাবে এক্সপোর্ট হয়েছে।' : '📥 Chat exported successfully.');
+            document.getElementById('menuDropdown').style.display = 'none';
         }
 
         function openDirectDialModal() {
-            document.getElementById('customModalTitle').innerText = 'Direct Dial Number';
-            document.getElementById('customModalDesc').innerText = 'যেকোনো নাম্বার ডায়াল করুন (যেমন: +968xxxxxxx):';
+            let lang = document.getElementById('appLanguage').value;
+            document.getElementById('customModalTitle').innerText = lang === 'bn' ? 'সরাসরি নাম্বার ডায়াল' : 'Direct Dial Number';
+            document.getElementById('customModalDesc').innerText = lang === 'bn' ? 'যেকোনো নাম্বার ডায়াল করুন (যেমন: +968xxxxxxx):' : 'Enter any phone number (e.g. +968xxxxxxx):';
             document.getElementById('customModalInputArea').innerHTML = `<input type="tel" id="directDialInput" placeholder="+968xxxxxxxx">`;
-            document.getElementById('customModalConfirmBtn').innerText = 'Call Now';
+            document.getElementById('customModalConfirmBtn').innerText = lang === 'bn' ? 'কল করুন' : 'Call Now';
             
             pendingActionCallback = () => {
                 let num = document.getElementById('directDialInput').value;
                 if(!num) {
-                    alert('দয়া করে একটি সঠিক নাম্বার দিন!');
+                    alert(lang === 'bn' ? 'দয়া করে একটি সঠিক নাম্বার দিন!' : 'Please enter a valid number!');
                     return;
                 }
                 closeModal();
-                openCallModal('Direct Dial', num, 'Global');
+                openChatInfo('Direct Dial', num, 'Global');
             };
 
             document.getElementById('customModal').classList.remove('hidden');
@@ -392,16 +632,17 @@
             let lName = document.getElementById('newContactLastName').value;
             let phone = document.getElementById('newContactPhone').value;
             let country = document.getElementById('newContactCountry').value;
+            let lang = document.getElementById('appLanguage').value;
 
             if(!fName || !phone) {
-                alert('দয়া করে নাম এবং ফোন নাম্বার লিখুন!');
+                alert(lang === 'bn' ? 'দয়া করে নাম এবং ফোন নাম্বার লিখুন!' : 'Please enter name and phone!');
                 return;
             }
 
             let container = document.getElementById('chatListContainer');
             let newItem = document.createElement('div');
             newItem.className = 'chat-item';
-            newItem.setAttribute('onclick', `openCallModal('${fName} ${lName}', '${phone}', '${country}')`);
+            newItem.setAttribute('onclick', `openChatInfo('${fName} ${lName}', '${phone}', '${country.toUpperCase()}')`);
             newItem.innerHTML = `
                 <div class="chat-avatar" style="background: #14b8a6;">👤</div>
                 <div class="chat-info">
@@ -411,22 +652,23 @@
             `;
             container.prepend(newItem);
             closeModal();
-            alert('সফলভাবে নতুন কন্টাক্ট সেভ করা হয়েছে!');
+            alert(lang === 'bn' ? 'সফলভাবে নতুন কন্টাক্ট সেভ করা হয়েছে!' : 'Contact saved successfully!');
         }
 
         function saveNewGroup() {
             let gName = document.getElementById('newGroupName').value;
             let gDesc = document.getElementById('newGroupDesc').value;
+            let lang = document.getElementById('appLanguage').value;
 
             if(!gName) {
-                alert('দয়া করে গ্রুপের নাম দিন!');
+                alert(lang === 'bn' ? 'দয়া করে গ্রুপের নাম দিন!' : 'Please enter group name!');
                 return;
             }
 
             let container = document.getElementById('chatListContainer');
             let newItem = document.createElement('div');
             newItem.className = 'chat-item';
-            newItem.setAttribute('onclick', `openCustomPopup('${gName}', 'Opening group chat and community channel...')`);
+            newItem.setAttribute('onclick', `openChatInfo('${gName}', 'Group Chat', 'Community')`);
             newItem.innerHTML = `
                 <div class="chat-avatar" style="background: #8b5cf6;">👥</div>
                 <div class="chat-info">
@@ -436,7 +678,7 @@
             `;
             container.prepend(newItem);
             closeModal();
-            alert(`সফলভাবে গ্রুপ "${gName}" তৈরি করা হয়েছে!`);
+            alert(lang === 'bn' ? `সফলভাবে গ্রুপ "${gName}" তৈরি করা হয়েছে!` : `Group "${gName}" created successfully!`);
         }
 
         async function watchAdForToken() {
@@ -463,4 +705,4 @@
         }
     </script>
 </body>
-                    </html>
+                        </html>
