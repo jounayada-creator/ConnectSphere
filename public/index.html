@@ -16,6 +16,14 @@
         .vip-tag { background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .vip-tag:hover { opacity: 0.8; }
         .lang-select { background: #2a3942; color: #e9edef; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 12px; outline: none; }
+        .header-menu-btn { background: transparent; color: #8696a0; font-size: 18px; border: none; cursor: pointer; padding: 0 4px; width: auto; margin: 0; }
+        .header-menu-btn:hover { color: #fff; }
+
+        /* Global Header Three-Dot Dropdown */
+        .header-dropdown { position: absolute; right: 15px; top: 50px; background: #233138; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); display: none; z-index: 50; width: 160px; border: 1px solid #2a3942; }
+        .header-dropdown div { padding: 10px 14px; font-size: 13px; cursor: pointer; color: #e9edef; border-bottom: 1px solid #2a3942; }
+        .header-dropdown div:hover { background: #182229; }
+        .header-dropdown div.danger { color: #ef4444; }
 
         /* Search Bar Area */
         .search-container { background: #111b21; padding: 8px 12px; display: flex; align-items: center; border-bottom: 1px solid #222d34; }
@@ -65,8 +73,14 @@
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; }
         .modal-content { background: #111b21; padding: 20px; border-radius: 12px; width: 90%; max-width: 380px; border: 1px solid #222d34; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
         
+        /* VIP Pricing Cards */
+        .vip-plan-card { background: #202c33; border: 1px solid #2a3942; border-radius: 8px; padding: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .vip-plan-card:hover, .vip-plan-card.selected { border-color: #ef4444; background: #233138; }
+        .vip-plan-title { font-weight: bold; font-size: 14px; color: #fff; }
+        .vip-plan-price { font-size: 13px; color: #ffb703; font-weight: bold; }
+
         /* Menu Dropdown */
-        .menu-dropdown { position: absolute; right: 20px; top: 50px; background: #233138; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); display: none; z-index: 10; width: 140px; }
+        .menu-dropdown { position: absolute; right: 20px; top: 50px; background: #233138; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); display: none; z-index: 10; width: 140px; border: 1px solid #2a3942; }
         .menu-dropdown div { padding: 10px 14px; font-size: 13px; cursor: pointer; color: #e9edef; border-bottom: 1px solid #2a3942; }
         .menu-dropdown div:hover { background: #182229; }
         .menu-dropdown div.danger { color: #ef4444; }
@@ -85,7 +99,16 @@
                     <option value="bn">বাংলা</option>
                     <option value="ar">العربية</option>
                 </select>
+                <!-- Global Three-Dot Menu Button -->
+                <button class="header-menu-btn" onclick="toggleHeaderMenu()">⋮</button>
             </div>
+        </div>
+
+        <!-- Global Header Dropdown Menu -->
+        <div id="headerDropdown" class="header-dropdown">
+            <div onclick="openSettingsModal()" id="menuSettingText">⚙️ Settings</div>
+            <div onclick="openVipModal()" id="menuVipText">⭐ VIP Plans</div>
+            <div onclick="logoutUser()" class="danger" id="menuLogoutText">🚪 Logout</div>
         </div>
 
         <!-- Registration Screen (Login) -->
@@ -246,36 +269,55 @@
             </div>
         </div>
 
-        <!-- 2. VIP Membership Modal -->
+        <!-- 2. Country-Specific VIP Subscription Plans Modal -->
         <div id="vipModal" class="modal hidden">
             <div class="modal-content" style="text-align: center;">
-                <h3 style="color: #ef4444; margin-top:0;" id="vipModalTitle">⭐ ConnectSphere VIP Member</h3>
-                <p id="vipModalDesc" style="color: #e9edef; font-size: 13px; line-height: 1.5; margin: 15px 0;">
-                    You are enjoying VIP status with unlimited global call routing, priority bandwidth, and zero ad interruptions!
-                </p>
-                <div style="background: #202c33; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 12px; color: #00a884;" id="vipStatusInfo">
-                    Status: Active (Oman / Global Node)
+                <h3 style="color: #ef4444; margin-top:0;" id="vipModalTitle">⭐ ConnectSphere VIP Plans</h3>
+                <p id="vipModalSub" style="color: #8696a0; font-size: 12px; margin-bottom: 12px;">Select a plan tailored for your country region</p>
+                
+                <div id="vipPlansContainer">
+                    <!-- Dynamic Country Plans injected via JS -->
                 </div>
-                <button onclick="closeModal()" style="background: #00a884;" id="vipCloseBtn">Awesome, Close</button>
+
+                <button style="background: #334155; margin-top: 10px;" onclick="closeModal()" id="vipCloseBtn">Close</button>
             </div>
         </div>
 
-        <!-- 3. Add Story / Status Modal -->
+        <!-- 3. Real Gallery Story Upload Modal -->
         <div id="storyModal" class="modal hidden">
             <div class="modal-content">
                 <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtStoryTitle">Post New Story</h3>
                 <input type="text" id="storyCaption" placeholder="Write caption or status update...">
-                <select id="storyType">
-                    <option value="photo">📸 Photo / Design Mockup Story</option>
-                    <option value="text">✍️ Text Status Update</option>
-                    <option value="video">🎥 Short Video Clip</option>
-                </select>
-                <button onclick="publishStory()" id="btnPublishStory">Publish Story</button>
+                
+                <!-- Real File / Gallery Picker Input -->
+                <div style="margin: 10px 0;">
+                    <label style="font-size: 12px; color: #8696a0; display: block; margin-bottom: 4px;" id="txtSelectMedia">Select Image / Video from Gallery:</label>
+                    <input type="file" id="storyMediaFile" accept="image/*,video/*" style="background: #202c33; padding: 6px; font-size: 12px;">
+                </div>
+
+                <div id="storyPreviewContainer" style="margin: 10px 0; text-align: center; max-height: 150px; overflow: hidden;"></div>
+
+                <button onclick="publishRealStory()" id="btnPublishStory">Publish Story</button>
                 <button style="background: #334155; margin-top: 5px;" onclick="closeModal()" id="btnCancelStory">Cancel</button>
             </div>
         </div>
 
-        <!-- 4. New Contact Modal -->
+        <!-- 4. Settings Modal -->
+        <div id="settingsModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtSettingsTitle">App Settings</h3>
+                <div style="font-size: 13px; color: #e9edef; line-height: 1.8; margin-bottom: 15px;">
+                    <div>👤 <b>Name:</b> <span id="settingDispName">-</span></div>
+                    <div>📱 <b>Phone:</b> <span id="settingDispPhone">-</span></div>
+                    <div>🌍 <b>Region:</b> <span id="settingDispRegion">-</span></div>
+                    <div>🪙 <b>Tokens:</b> <span id="settingDispTokens">-</span></div>
+                </div>
+                <button onclick="logoutUser()" style="background: #ef4444; margin-bottom: 6px;" id="btnSettingLogout">Logout Account</button>
+                <button style="background: #334155;" onclick="closeModal()" id="btnSettingClose">Close</button>
+            </div>
+        </div>
+
+        <!-- 5. New Contact Modal -->
         <div id="newContactModal" class="modal hidden">
             <div class="modal-content">
                 <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtAddContactTitle">Add New Contact</h3>
@@ -293,7 +335,7 @@
             </div>
         </div>
 
-        <!-- 5. New Group Modal -->
+        <!-- 6. New Group Modal -->
         <div id="newGroupModal" class="modal hidden">
             <div class="modal-content">
                 <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtCreateGroupTitle">Create New Group</h3>
@@ -304,7 +346,7 @@
             </div>
         </div>
 
-        <!-- 6. Chat Info & Management Modal -->
+        <!-- 7. Chat Info & Management Modal -->
         <div id="chatInfoModal" class="modal hidden">
             <div class="modal-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3942; padding-bottom: 10px; margin-bottom: 12px;">
@@ -334,7 +376,7 @@
             </div>
         </div>
 
-        <!-- 7. General Custom Alert Modal -->
+        <!-- 8. General Custom Alert Modal -->
         <div id="customModal" class="modal hidden">
             <div class="modal-content" style="text-align: center;">
                 <h3 id="customModalTitle" style="color: #00a884; margin-top:0;">Notification</h3>
@@ -354,7 +396,6 @@
         let pendingActionCallback = null;
         let activeChatData = { name: '', number: '', country: '', connectedMembers: [] };
 
-        // Multilingual Dictionary (English, Bengali, Arabic)
         const translations = {
             en: {
                 welcome: "Welcome to ConnectSphere",
@@ -394,15 +435,20 @@
                 menuBlock: "🚫 Block Contact",
                 menuClear: "🧹 Clear Messages",
                 menuExport: "📥 Export Chat",
-                vipTitle: "⭐ ConnectSphere VIP Member",
-                vipDesc: "You are enjoying VIP status with unlimited global call routing, priority bandwidth, and zero ad interruptions!",
-                vipClose: "Awesome, Close",
+                vipTitle: "⭐ ConnectSphere VIP Plans",
+                vipSub: "Select a plan tailored for your country region",
                 storyTitle: "Post New Story",
+                selectMediaLabel: "Select Image / Video from Gallery:",
                 publishStoryBtn: "Publish Story",
                 addStoryLabel: "My Status",
                 adTitle: "📢 Sponsored Ad / Token Offer",
                 adDesc: "Watch short video ad to earn free global tokens",
-                adBtn: "Watch Ad"
+                adBtn: "Watch Ad",
+                settingTitle: "App Settings",
+                settingLogout: "Logout Account",
+                menuSetting: "⚙️ Settings",
+                menuVip: "⭐ VIP Plans",
+                menuLogout: "🚪 Logout"
             },
             bn: {
                 welcome: "স্বাগতম ConnectSphere-এ",
@@ -442,15 +488,20 @@
                 menuBlock: "🚫 কন্টাক্ট ব্লক করুন",
                 menuClear: "🧹 মেসেজ ক্লিয়ার করুন",
                 menuExport: "📥 চ্যাট এক্সপোর্ট করুন",
-                vipTitle: "⭐ ConnectSphere ভিআইপি মেম্বার",
-                vipDesc: "আপনি আনলিমিটেড গ্লোবাল কল রাউটিং, প্রায়োরিটি ব্যান্ডউইথ এবং অ্যাড ফ্রি সুবিধা সহ ভিআইপি স্ট্যাটাসে আছেন!",
-                vipClose: "দারুণ, বন্ধ করুন",
+                vipTitle: "⭐ ConnectSphere ভিআইপি সাবস্ক্রিপশন প্ল্যান",
+                vipSub: "আপনার দেশের কারেন্সি অনুযায়ী সেরা প্ল্যানটি বেছে নিন",
                 storyTitle: "নতুন স্টোরি পোস্ট করুন",
+                selectMediaLabel: "গ্যালারি থেকে ছবি বা ভিডিও সিলেক্ট করুন:",
                 publishStoryBtn: "স্টোরি প্রকাশ করুন",
                 addStoryLabel: "আমার স্ট্যাটাস",
                 adTitle: "📢 স্পন্সরড অ্যাড / টোকেন অফার",
                 adDesc: "ফ্রি গ্লোবাল টোকেন পেতে ছোট ভিডিও অ্যাড দেখুন",
-                adBtn: "অ্যাড দেখুন"
+                adBtn: "অ্যাড দেখুন",
+                settingTitle: "অ্যাপ সেটিংস",
+                settingLogout: "লগআউট করুন",
+                menuSetting: "⚙️ সেটিংস",
+                menuVip: "⭐ ভিআইপি প্ল্যান",
+                menuLogout: "🚪 লগআউট"
             },
             ar: {
                 welcome: "مرحباً بك في ConnectSphere",
@@ -490,15 +541,20 @@
                 menuBlock: "🚫 حظر جهة الاتصال",
                 menuClear: "🧹 مسح الرسائل",
                 menuExport: "📥 تصدير الدردشة",
-                vipTitle: "⭐ عضوية VIP في ConnectSphere",
-                vipDesc: "أنت تستمتع بوضع VIP مع توجيه المكالمات غير المحدود وخلوها من الإعلانات!",
-                vipClose: "إغلاق",
+                vipTitle: "⭐ خطط اشتراك VIP في ConnectSphere",
+                vipSub: "اختر الخطة المناسبة لمنطقة بلدك",
                 storyTitle: "نشر قصة جديدة",
+                selectMediaLabel: "حدد صورة أو فيديو من المعرض:",
                 publishStoryBtn: "نشر القصة",
                 addStoryLabel: "حالتتي",
                 adTitle: "📢 إعلان ممول / عرض الرموز",
                 adDesc: "شاهد إعلان فيديو قصير لكسب رموز مجانية",
-                adBtn: "شاهد الإعلان"
+                adBtn: "شاهد الإعلان",
+                settingTitle: "إعدادات التطبيق",
+                settingLogout: "تسجيل الخروج",
+                menuSetting: "⚙️ الإعدادات",
+                menuVip: "⭐ خطط VIP",
+                menuLogout: "🚪 تسجيل الخروج"
             }
         };
 
@@ -544,16 +600,45 @@
             document.getElementById('menuClear').innerText = t.menuClear;
             document.getElementById('menuExport').innerText = t.menuExport;
             
-            // VIP & Story & Ad texts
             document.getElementById('vipModalTitle').innerText = t.vipTitle;
-            document.getElementById('vipModalDesc').innerText = t.vipDesc;
-            document.getElementById('vipCloseBtn').innerText = t.vipClose;
+            document.getElementById('vipModalSub').innerText = t.vipSub;
             document.getElementById('txtStoryTitle').innerText = t.storyTitle;
+            document.getElementById('txtSelectMedia').innerText = t.selectMediaLabel;
             document.getElementById('btnPublishStory').innerText = t.publishStoryBtn;
             document.getElementById('txtAddStory').innerText = t.addStoryLabel;
             document.getElementById('adBannerTitle').innerText = t.adTitle;
             document.getElementById('adBannerDesc').innerText = t.adDesc;
             document.getElementById('adBtnText').innerText = t.adBtn;
+            document.getElementById('txtSettingsTitle').innerText = t.settingTitle;
+            document.getElementById('btnSettingLogout').innerText = t.settingLogout;
+            document.getElementById('menuSettingText').innerText = t.menuSetting;
+            document.getElementById('menuVipText').innerText = t.menuVip;
+            document.getElementById('menuLogoutText').innerText = t.menuLogout;
+        }
+
+        function toggleHeaderMenu() {
+            let menu = document.getElementById('headerDropdown');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function openSettingsModal() {
+            toggleHeaderMenu();
+            if(currentUser) {
+                document.getElementById('settingDispName').innerText = currentUser.name;
+                document.getElementById('settingDispPhone').innerText = currentUser.phone;
+                document.getElementById('settingDispRegion').innerText = currentUser.country.toUpperCase();
+                document.getElementById('settingDispTokens').innerText = currentUser.tokens;
+            }
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function logoutUser() {
+            closeModal();
+            document.getElementById('headerDropdown').style.display = 'none';
+            currentUser = null;
+            document.getElementById('mainSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            alert('সফলভাবে লগআউট করা হয়েছে!');
         }
 
         async function registerUser() {
@@ -601,7 +686,9 @@
             document.getElementById('customModal').classList.add('hidden');
             document.getElementById('vipModal').classList.add('hidden');
             document.getElementById('storyModal').classList.add('hidden');
+            document.getElementById('settingsModal').classList.add('hidden');
             document.getElementById('menuDropdown').style.display = 'none';
+            document.getElementById('headerDropdown').style.display = 'none';
             pendingActionCallback = null;
         }
 
@@ -610,7 +697,47 @@
         }
 
         function openVipModal() {
+            document.getElementById('headerDropdown').style.display = 'none';
+            let country = currentUser ? currentUser.country : document.getElementById('country').value;
+            let container = document.getElementById('vipPlansContainer');
+            
+            let p1Month = "3.500 OMR / month";
+            let p3Month = "9.000 OMR / 3 months";
+            
+            if(country === 'bd') {
+                p1Month = "৳৯৯৯ / মাস";
+                p3Month = "৳২,৬৯৯ / ৩ মাস";
+            } else if(country === 'sa') {
+                p1Month = "35 SAR / month";
+                p3Month = "95 SAR / 3 months";
+            } else if(country === 'ae') {
+                p1Month = "35 AED / month";
+                p3Month = "95 AED / 3 months";
+            }
+
+            container.innerHTML = `
+                <div class="vip-plan-card" onclick="selectVipPlan('1 Month Plan')">
+                    <div>
+                        <div class="vip-plan-title">📌 1 Month VIP Pass</div>
+                        <div style="font-size: 11px; color: #8696a0;">Full unlimited global calls & zero ads</div>
+                    </div>
+                    <div class="vip-plan-price">${p1Month}</div>
+                </div>
+                <div class="vip-plan-card" onclick="selectVipPlan('3 Months Plan')">
+                    <div>
+                        <div class="vip-plan-title">⭐ 3 Months VIP Pass (Save 15%)</div>
+                        <div style="font-size: 11px; color: #8696a0;">Best value for active creators & professionals</div>
+                    </div>
+                    <div class="vip-plan-price">${p3Month}</div>
+                </div>
+            `;
+
             document.getElementById('vipModal').classList.remove('hidden');
+        }
+
+        function selectVipPlan(planName) {
+            alert(`🎉 আপনি সফলভাবে "${planName}" সিলেক্ট করেছেন!\nপেমেন্ট গেটওয়ে প্রসেসিং শুরু হচ্ছে...`);
+            closeModal();
         }
 
         function openAddStoryModal() {
@@ -618,18 +745,25 @@
         }
 
         function viewStory(title, desc) {
-            let lang = document.getElementById('appLanguage').value;
-            alert(lang === 'bn' ? `স্টোরি: ${title}\n${desc}` : `Story: ${title}\n${desc}`);
+            alert(`Story: ${title}\n${desc}`);
         }
 
-        function publishStory() {
+        function publishRealStory() {
             let caption = document.getElementById('storyCaption').value;
+            let fileInput = document.getElementById('storyMediaFile');
             let lang = document.getElementById('appLanguage').value;
+
+            if(fileInput.files.length === 0 && !caption) {
+                alert(lang === 'bn' ? 'দয়া করে একটি ছবি/ভিডিও সিলেক্ট করুন অথবা ক্যাপশন লিখুন!' : 'Please select an image/video or write a caption!');
+                return;
+            }
+
+            let fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'Text Status';
 
             let row = document.getElementById('storyRowContainer');
             let newStory = document.createElement('div');
             newStory.className = 'story-item';
-            newStory.setAttribute('onclick', `viewStory('My Story', '${caption || 'New status update'}')`);
+            newStory.setAttribute('onclick', `viewStory('My Story', '${caption || fileName}')`);
             newStory.innerHTML = `
                 <div class="story-ring">
                     <div class="story-avatar">📸</div>
@@ -638,7 +772,7 @@
             `;
             row.appendChild(newStory);
             closeModal();
-            alert(lang === 'bn' ? 'সফলভাবে স্টোরি প্রকাশিত হয়েছে!' : 'Story published successfully!');
+            alert(lang === 'bn' ? `সফলভাবে স্টোরি প্রকাশিত হয়েছে! (${fileName})` : `Story published successfully! (${fileName})`);
         }
 
         function openNewContactModal() {
@@ -848,4 +982,4 @@
         }
     </script>
 </body>
-    </html>
+                </html>
