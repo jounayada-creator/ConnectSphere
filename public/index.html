@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Emergency & Smart Router App</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; text-align: center; padding: 20px; margin: 0; }
+        .card { background: #1e293b; padding: 20px; border-radius: 10px; max-width: 400px; margin: 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; box-sizing: border-box; }
+        button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
+        button:hover { background: #059669; }
+        .hidden { display: none; }
+        .token-box { background: #334155; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 18px; color: #38bdf8; }
+        .ad-btn { background: #f59e0b; }
+        .ad-btn:hover { background: #d97706; }
+        .router-btn { background: #6366f1; }
+        .router-btn:hover { background: #4f46e5; }
+        .lang-select { background: #334155; color: #fff; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- গ্লোবাল ভাষা নির্বাচন ড্রপডাউন -->
+        <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="en" selected>English</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="es">Español (Spanish)</option>
+            <option value="fr">Français (French)</option>
+        </select>
+
+        <!-- লগইন সেকশন -->
+        <div id="loginSection">
+            <h2 id="txtWelcome">Welcome to Global Network</h2>
+            <p id="txtSub">Enter your mobile number to get 3 Free Tokens.</p>
+            
+            <select id="country">
+                <option value="om">Oman (+968)</option>
+                <option value="bd">Bangladesh (+880)</option>
+                <option value="other">Other Country</option>
+            </select>
+
+            <input type="tel" id="phone" placeholder="Enter your mobile number">
+            
+            <button id="btnLogin" onclick="loginUser()">Login & Get 3 Free Tokens</button>
+        </div>
+
+        <!-- মেইন ড্যাশবোর্ড -->
+        <div id="dashboardSection" class="hidden">
+            <h2 id="txtDashboard">Dashboard</h2>
+            <div class="token-box"><span id="txtTokenLabel">Token Balance:</span> <span id="tokenCount">0</span></div>
+            
+            <p id="txtCallDesc">Use tokens for global calls or scan local area.</p>
+            <button id="btnRouter" class="router-btn" onclick="scanLocalRouter()">Smart Local Scan (Free)</button>
+            <button id="btnCall" onclick="makeCall()">Global Call (Costs 1 Token)</button>
+            
+            <button id="btnAd" class="ad-btn" onclick="watchAdForToken()">Watch Ad & Get Token (+1)</button>
+            
+            <button id="btnLogout" style="background: #ef4444;" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUserPhone = '';
+        let currentUserCountry = '';
+
+        const translations = {
+            en: {
+                welcome: "Welcome to Global Network",
+                sub: "Enter your mobile number to get 3 Free Tokens.",
+                phonePlaceholder: "Enter your mobile number",
+                loginBtn: "Login & Get 3 Free Tokens",
+                dashboard: "Dashboard",
+                tokenLabel: "Token Balance:",
+                callDesc: "Use tokens for global calls or scan local area.",
+                routerBtn: "Smart Local Scan (Free)",
+                callBtn: "Global Call (Costs 1 Token)",
+                adBtn: "Watch Ad & Get Token (+1)",
+                logoutBtn: "Logout"
+            },
+            bn: {
+                welcome: "স্বাগতম গ্লোবাল নেটওয়ার্কে",
+                sub: "আপনার মোবাইল নাম্বার দিয়ে ৩টি ফ্রি টোকেন নিন।",
+                phonePlaceholder: "আপনার মোবাইল নাম্বার দিন",
+                loginBtn: "লগইন করুন (৩ টোকেন ফ্রি)",
+                dashboard: "ড্যাশবোর্ড",
+                tokenLabel: "টোকেন ব্যালেন্স:",
+                callDesc: "গ্লোবাল কলের জন্য টোকেন ব্যবহার করুন বা লোকাল স্ক্যান করুন।",
+                routerBtn: "স্মার্ট লোকাল স্ক্যান (ফ্রি)",
+                callBtn: "গ্লোবাল কল (১ টোকেন কাটবে)",
+                adBtn: "অ্যাড দেখে টোকেন নিন (+1)",
+                logoutBtn: "লগআউট"
+            },
+            ar: {
+                welcome: "مرحباً بك في الشبكة العالمية",
+                sub: "أدخل رقم هاتفك للحصول على 3 رموز مجانية.",
+                phonePlaceholder: "أدخل رقم هاتفك المحمول",
+                loginBtn: "تسجيل الدخول واحصل على 3 رموز",
+                dashboard: "لوحة التحكم",
+                tokenLabel: "رصيد الرموز:",
+                callDesc: "استخدم الرموز للمكالمات أو مسح المنطقة المحلية.",
+                routerBtn: "مسح محلي ذكي (مجاني)",
+                callBtn: "مكالمة عالمية (تخصم رمزاً واحداً)",
+                adBtn: "شاهد إعلان واحصل على رمز (+1)",
+                logoutBtn: "تسجيل الخروج"
+            },
+            hi: {
+                welcome: "ग्लोबल नेटवर्क में आपका स्वागत है",
+                sub: "3 मुफ्त टोकन पाने के लिए अपना मोबाइल नंबर दर्ज करें।",
+                phonePlaceholder: "अपना मोबाइल नंबर दर्ज करें",
+                loginBtn: "लॉगिन करें और 3 मुफ्त टोकन पाएं",
+                dashboard: "डैशबोर्ड",
+                tokenLabel: "टোকन बैलेंस:",
+                callDesc: "ग्लोबल कॉल के लिए टोकन का उपयोग करें या लोकल स्कैन करें।",
+                routerBtn: "स्मार्ट लोकल स्कैन (मुफ्त)",
+                callBtn: "ग्लोबल कॉल (1 टोकन कटेगा)",
+                adBtn: "विज्ञापन देखें और टोकन पाएं (+1)",
+                logoutBtn: "लॉगआउट"
+            },
+            ur: {
+                welcome: "گلوبل نیٹ ورک میں خوش آمدید",
+                sub: "3 مفت ٹوکن حاصل کرنے کے لیے اپنا موبائل نمبر درج کریں۔",
+                phonePlaceholder: "اپنا موبائل نمبر درج کریں",
+                loginBtn: "لاگ ان کریں اور 3 مفت ٹوکن پائیں",
+                dashboard: "ڈیش بورڈ",
+                tokenLabel: "ٹوکن بیلنس:",
+                callDesc: "گلوبل کال کے لیے ٹوکن استعمال کریں یا لوکل سکین کریں۔",
+                routerBtn: "سمارٹ لوکل سکین (مفت)",
+                callBtn: "گلوبل کال (1 ٹوکن کٹے گا)",
+                adBtn: "اشتہار دیکھیں اور ٹوکن حاصل کریں (+1)",
+                logoutBtn: "لاگ آؤٹ"
+            },
+            es: {
+                welcome: "Bienvenido a la Red Global",
+                sub: "Ingresa tu número para obtener 3 tokens gratis.",
+                phonePlaceholder: "Ingresa tu número de celular",
+                loginBtn: "Iniciar sesión y obtener 3 tokens",
+                dashboard: "Panel",
+                tokenLabel: "Saldo de tokens:",
+                callDesc: "Usa tokens para llamadas o escaneo local.",
+                routerBtn: "Escaneo Local Inteligente (Gratis)",
+                callBtn: "Llamada Global (Cuesta 1 Token)",
+                adBtn: "Ver anuncio y obtener token (+1)",
+                logoutBtn: "Cerrar sesión"
+            },
+            fr: {
+                welcome: "Bienvenue sur le Réseau Global",
+                sub: "Entrez votre numéro pour 3 jetons gratuits.",
+                phonePlaceholder: "Entrez votre numéro de mobile",
+                loginBtn: "Connexion et 3 jetons gratuits",
+                dashboard: "Tableau de bord",
+                tokenLabel: "Solde de jetons :",
+                callDesc: "Utilisez des jetons pour les appels mondiaux.",
+                routerBtn: "Scan Local Intelligent (Gratuit)",
+                callBtn: "Appel Global (Coûte 1 jeton)",
+                adBtn: "Regarder une pub et gagner un jeton (+1)",
+                logoutBtn: "Déconnexion"
+            }
+        };
+
+        function changeLanguage() {
+            let lang = document.getElementById('appLanguage').value;
+            let t = translations[lang] || translations['en'];
+
+            document.getElementById('txtWelcome').innerText = t.welcome;
+            document.getElementById('txtSub').innerText = t.sub;
+            document.getElementById('phone').placeholder = t.phonePlaceholder;
+            document.getElementById('btnLogin').innerText = t.loginBtn;
+            document.getElementById('txtDashboard').innerText = t.dashboard;
+            document.getElementById('txtTokenLabel').innerText = t.tokenLabel;
+            document.getElementById('txtCallDesc').innerText = t.callDesc;
+            document.getElementById('btnRouter').innerText = t.routerBtn;
+            document.getElementById('btnCall').innerText = t.callBtn;
+            document.getElementById('btnAd').innerText = t.adBtn;
+            document.getElementById('btnLogout').innerText = t.logoutBtn;
+        }
+
+        async function loginUser() {
+            let phone = document.getElementById('phone').value;
+            let country = document.getElementById('country').value;
+
+            if(phone.length < 5) {
+                alert('দয়া করে সঠিক নাম্বার দিন!');
+                return;
+            }
+
+            let response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, country })
+            });
+
+            let data = await response.json();
+            if(data.success) {
+                currentUserPhone = data.user.phone;
+                currentUserCountry = data.user.country;
+                document.getElementById('tokenCount').innerText = data.user.tokens;
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function scanLocalRouter() {
+            let response = await fetch('/api/smart-router', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: currentUserPhone, country: currentUserCountry })
+            });
+
+            let data = await response.json();
+            alert(data.message);
+        }
+
+        async function watchAdForToken() {
+            let response = await fetch('/api/add-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: currentUserPhone })
+            });
+
+            let data = await response.json();
+            if(data.success) {
+                document.getElementById('tokenCount').innerText = data.tokens;
+                alert(data.message);
+            }
+        }
+
+        function makeCall() {
+            let tokens = parseInt(document.getElementById('tokenCount').innerText);
+            if(tokens > 0) {
+                alert('গ্লোবাল কল কানেক্ট হচ্ছে! (১টি টোকেন কেটে নেওয়া হয়েছে)');
+            } else {
+                alert('টোকেন শেষ! দয়া করে অ্যাড দেখে টোকেন নিন।');
+            }
+        }
+
+        function logout() {
+            currentUserPhone = '';
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+    </script>
+
+</body>
+  </html>
