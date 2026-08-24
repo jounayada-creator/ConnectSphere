@@ -11,10 +11,11 @@
         /* WhatsApp Header */
         .app-header { background: #202c33; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222d34; }
         .app-title { font-size: 18px; font-weight: bold; color: #00a884; display: flex; align-items: center; gap: 8px; }
-        .header-right { display: flex; align-items: center; gap: 10px; }
-        .token-badge { background: #ffb703; color: #111b21; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer; }
-        .vip-tag { background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .lang-select { background: #2a3942; color: #e9edef; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        .token-badge { background: #ffb703; color: #111b21; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .vip-tag { background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .vip-tag:hover { opacity: 0.8; }
+        .lang-select { background: #2a3942; color: #e9edef; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 12px; outline: none; }
 
         /* Search Bar Area */
         .search-container { background: #111b21; padding: 8px 12px; display: flex; align-items: center; border-bottom: 1px solid #222d34; }
@@ -22,7 +23,7 @@
         .search-wrapper { position: relative; width: 100%; }
         .search-icon { position: absolute; left: 12px; top: 10px; color: #8696a0; font-size: 14px; }
 
-        /* Bottom Navigation (WhatsApp Style 4 Tabs) */
+        /* Bottom Navigation */
         .whatsapp-bottom-nav { display: flex; background: #202c33; border-top: 1px solid #222d34; height: 55px; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #8696a0; cursor: pointer; gap: 3px; }
         .nav-item.active { color: #00a884; font-weight: bold; }
@@ -31,14 +32,20 @@
         /* App Body Content */
         .app-body { padding: 12px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
         
-        input, select, button { width: 100%; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; font-size: 14px; box-sizing: border-box; background: #2a3942; color: #fff; }
+        input, select, button { width: 100%; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; font-size: 14px; box-sizing: border-box; background: #2a3942; color: #fff; outline: none; }
         input::placeholder { color: #8696a0; }
-        button { background: #00a884; color: white; font-weight: bold; cursor: pointer; }
+        button { background: #00a884; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { background: #008f72; }
         
         .hidden { display: none !important; }
         
-        /* Chat List Style */
+        /* Chat List & Story Row */
+        .story-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #222d34; }
+        .story-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
+        .story-ring { width: 54px; height: 54px; border-radius: 50%; border: 2px solid #00a884; padding: 2px; display: flex; align-items: center; justify-content: center; background: #202c33; }
+        .story-avatar { width: 46px; height: 46px; border-radius: 50%; background: #2a3942; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .story-name { font-size: 11px; color: #e9edef; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 60px; }
+
         .chat-list { flex: 1; overflow-y: auto; }
         .chat-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #222d34; cursor: pointer; }
         .chat-avatar { width: 45px; height: 45px; background: #00a884; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; margin-right: 12px; color: #111b21; }
@@ -46,14 +53,19 @@
         .chat-name { font-size: 15px; font-weight: 600; color: #e9edef; }
         .chat-msg { font-size: 13px; color: #8696a0; margin-top: 2px; }
         
+        /* Ad Banner Box */
+        .ad-banner-box { background: linear-gradient(135deg, #202c33, #2a3942); border: 1px dashed #00a884; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .ad-text { font-size: 12px; color: #ffb703; font-weight: 600; }
+        .ad-btn { background: #ffb703; color: #111b21; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; width: auto; margin: 0; }
+
         /* Floating Action Button (FAB) */
         .fab { position: absolute; bottom: 70px; right: 20px; background: #00a884; color: #111b21; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); cursor: pointer; z-index: 10; }
         
-        /* Modal & Form Overlay */
+        /* Modal Overlay */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; }
         .modal-content { background: #111b21; padding: 20px; border-radius: 12px; width: 90%; max-width: 380px; border: 1px solid #222d34; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
         
-        /* Three Dot Menu Dropdown inside Chat Info */
+        /* Menu Dropdown */
         .menu-dropdown { position: absolute; right: 20px; top: 50px; background: #233138; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); display: none; z-index: 10; width: 140px; }
         .menu-dropdown div { padding: 10px 14px; font-size: 13px; cursor: pointer; color: #e9edef; border-bottom: 1px solid #2a3942; }
         .menu-dropdown div:hover { background: #182229; }
@@ -65,7 +77,7 @@
     <div class="app-container">
         <!-- WhatsApp Header -->
         <div class="app-header">
-            <div class="app-title">ConnectSphere <span class="vip-tag" id="vipStatus">VIP</span></div>
+            <div class="app-title">ConnectSphere <span class="vip-tag" id="vipStatus" onclick="openVipModal()">VIP</span></div>
             <div class="header-right">
                 <div class="token-badge" onclick="watchAdForToken()" title="Earn Token">🪙 <span id="tokenCount">3</span></div>
                 <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
@@ -112,6 +124,38 @@
                 
                 <!-- 1. CHATS TAB -->
                 <div id="tabContentChats" class="tab-pane">
+                    
+                    <!-- Story / Status Row inside Chats -->
+                    <div class="story-row" id="storyRowContainer">
+                        <div class="story-item" onclick="openAddStoryModal()">
+                            <div class="story-ring" style="border: 2px dashed #00a884;">
+                                <div class="story-avatar">➕</div>
+                            </div>
+                            <div class="story-name" id="txtAddStory">My Status</div>
+                        </div>
+                        <div class="story-item" onclick="viewStory('Family Story', '📸 Family gathering story update active.')">
+                            <div class="story-ring">
+                                <div class="story-avatar">👨‍👩‍👧</div>
+                            </div>
+                            <div class="story-name">Family</div>
+                        </div>
+                        <div class="story-item" onclick="viewStory('Peer Story', '🚀 App development & UI design preview.')">
+                            <div class="story-ring">
+                                <div class="story-avatar" style="background: #3b82f6;">🤝</div>
+                            </div>
+                            <div class="story-name">Peers</div>
+                        </div>
+                    </div>
+
+                    <!-- Sponsored Ad Banner Option -->
+                    <div class="ad-banner-box">
+                        <div>
+                            <div class="ad-text" id="adBannerTitle">📢 Sponsored Ad / Token Offer</div>
+                            <div style="font-size: 11px; color: #8696a0;" id="adBannerDesc">Watch short video ad to earn free global tokens</div>
+                        </div>
+                        <button class="ad-btn" onclick="watchAdForToken()" id="adBtnText">Watch Ad</button>
+                    </div>
+
                     <div style="font-size: 12px; color: #8696a0; margin-bottom: 8px;" id="txtRecent">RECENT CONVERSATIONS</div>
                     
                     <div class="chat-list" id="chatListContainer">
@@ -135,12 +179,12 @@
 
                 <!-- 2. UPDATES TAB -->
                 <div id="tabContentUpdates" class="tab-pane hidden">
-                    <h4 style="color: #00a884; margin-top:0;" id="txtStatusHead">Status & Channels</h4>
-                    <div class="chat-item" onclick="openCustomPopup('Status', 'Opening status update feed...')">
-                        <div class="chat-avatar" style="background: #8b5cf6;">➕</div>
+                    <h4 style="color: #00a884; margin-top:0;" id="txtStatusHead">Status & Stories</h4>
+                    <div class="chat-item" onclick="openAddStoryModal()">
+                        <div class="chat-avatar" style="background: #8b5cf6;">📸</div>
                         <div class="chat-info">
-                            <div class="chat-name" id="txtAddStatus">Add Status</div>
-                            <div class="chat-msg" id="txtShareUpdate">Share an update with peers</div>
+                            <div class="chat-name" id="txtAddStatus">Create New Story / Status</div>
+                            <div class="chat-msg" id="txtShareUpdate">Share photos, videos or updates with peers</div>
                         </div>
                     </div>
                 </div>
@@ -197,11 +241,41 @@
                 <button onclick="closeModal(); openNewGroupModal();" id="btnNewGroupMenu">👥 New Group / Community</button>
                 <button onclick="closeModal(); openNewContactModal();" id="btnNewContactMenu">👤 New Contact</button>
                 <button onclick="closeModal(); openDirectDialModal();" id="btnDirectDialMenu">📞 Direct Dial Number</button>
+                <button onclick="closeModal(); openAddStoryModal();" id="btnStoryMenu">📸 Add Story / Status</button>
                 <button style="background: #334155; margin-top: 10px;" onclick="closeModal()" id="btnCancelMenu">Cancel</button>
             </div>
         </div>
 
-        <!-- 2. New Contact Modal -->
+        <!-- 2. VIP Membership Modal -->
+        <div id="vipModal" class="modal hidden">
+            <div class="modal-content" style="text-align: center;">
+                <h3 style="color: #ef4444; margin-top:0;" id="vipModalTitle">⭐ ConnectSphere VIP Member</h3>
+                <p id="vipModalDesc" style="color: #e9edef; font-size: 13px; line-height: 1.5; margin: 15px 0;">
+                    You are enjoying VIP status with unlimited global call routing, priority bandwidth, and zero ad interruptions!
+                </p>
+                <div style="background: #202c33; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 12px; color: #00a884;" id="vipStatusInfo">
+                    Status: Active (Oman / Global Node)
+                </div>
+                <button onclick="closeModal()" style="background: #00a884;" id="vipCloseBtn">Awesome, Close</button>
+            </div>
+        </div>
+
+        <!-- 3. Add Story / Status Modal -->
+        <div id="storyModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtStoryTitle">Post New Story</h3>
+                <input type="text" id="storyCaption" placeholder="Write caption or status update...">
+                <select id="storyType">
+                    <option value="photo">📸 Photo / Design Mockup Story</option>
+                    <option value="text">✍️ Text Status Update</option>
+                    <option value="video">🎥 Short Video Clip</option>
+                </select>
+                <button onclick="publishStory()" id="btnPublishStory">Publish Story</button>
+                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()" id="btnCancelStory">Cancel</button>
+            </div>
+        </div>
+
+        <!-- 4. New Contact Modal -->
         <div id="newContactModal" class="modal hidden">
             <div class="modal-content">
                 <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtAddContactTitle">Add New Contact</h3>
@@ -219,7 +293,7 @@
             </div>
         </div>
 
-        <!-- 3. New Group Modal -->
+        <!-- 5. New Group Modal -->
         <div id="newGroupModal" class="modal hidden">
             <div class="modal-content">
                 <h3 style="color: #00a884; margin-top:0; text-align: center;" id="txtCreateGroupTitle">Create New Group</h3>
@@ -230,27 +304,22 @@
             </div>
         </div>
 
-        <!-- 4. WhatsApp Chat Info & Management Modal (With Three Dot Menu & Member Connect) -->
+        <!-- 6. Chat Info & Management Modal -->
         <div id="chatInfoModal" class="modal hidden">
             <div class="modal-content">
-                <!-- Header with Title and Three-Dot Menu Button -->
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3942; padding-bottom: 10px; margin-bottom: 12px;">
                     <h3 id="infoChatName" style="color: #00a884; margin: 0; font-size: 16px;">Chat Info</h3>
                     <div style="cursor: pointer; font-size: 18px; padding: 0 8px; color: #8696a0;" onclick="toggleMenuDropdown()">⋮</div>
                 </div>
 
-                <!-- Three Dot Dropdown Menu -->
                 <div id="menuDropdown" class="menu-dropdown">
                     <div onclick="blockContact()" id="menuBlock" class="danger">🚫 Block Contact</div>
                     <div onclick="clearChatLog()" id="menuClear">🧹 Clear Messages</div>
                     <div onclick="exportChat()" id="menuExport">📥 Export Chat</div>
                 </div>
 
-                <div id="infoChatDetails" style="font-size: 13px; color: #e9edef; line-height: 1.6;">
-                    <!-- Details populated dynamically -->
-                </div>
+                <div id="infoChatDetails" style="font-size: 13px; color: #e9edef; line-height: 1.6;"></div>
 
-                <!-- Member Connection Section -->
                 <div style="margin-top: 15px; background: #202c33; padding: 10px; border-radius: 8px;">
                     <div style="font-size: 12px; font-weight: bold; color: #00a884; margin-bottom: 6px;" id="txtConnectMember">Connect Member to this Call/Chat:</div>
                     <input type="text" id="connectMemberName" placeholder="Member Name" style="margin-bottom: 6px; padding: 6px; font-size: 12px;">
@@ -265,7 +334,7 @@
             </div>
         </div>
 
-        <!-- 5. General Custom Alert Modal -->
+        <!-- 7. General Custom Alert Modal -->
         <div id="customModal" class="modal hidden">
             <div class="modal-content" style="text-align: center;">
                 <h3 id="customModalTitle" style="color: #00a884; margin-top:0;">Notification</h3>
@@ -285,7 +354,7 @@
         let pendingActionCallback = null;
         let activeChatData = { name: '', number: '', country: '', connectedMembers: [] };
 
-        // Multilingual Dictionary
+        // Multilingual Dictionary (English, Bengali, Arabic)
         const translations = {
             en: {
                 welcome: "Welcome to ConnectSphere",
@@ -294,9 +363,9 @@
                 recent: "RECENT CONVERSATIONS",
                 msgFamily: "Online - Direct Phone Call & Members",
                 msgPeer: "Tap to manage connection & dial",
-                statusHead: "Status & Channels",
-                addStatus: "Add Status",
-                shareUpdate: "Share an update with peers",
+                statusHead: "Status & Stories",
+                addStatus: "Create New Story / Status",
+                shareUpdate: "Share photos, videos or updates with peers",
                 commHead: "Communities",
                 commDesc: "Bring together topic-based groups easily.",
                 startComm: "Start your community",
@@ -310,6 +379,7 @@
                 newGroupMenu: "👥 New Group / Community",
                 newContactMenu: "👤 New Contact",
                 directDialMenu: "📞 Direct Dial Number",
+                storyMenu: "📸 Add Story / Status",
                 cancelMenu: "Cancel",
                 addContactTitle: "Add New Contact",
                 saveContact: "Save Contact",
@@ -323,7 +393,16 @@
                 closeBtn: "Close",
                 menuBlock: "🚫 Block Contact",
                 menuClear: "🧹 Clear Messages",
-                menuExport: "📥 Export Chat"
+                menuExport: "📥 Export Chat",
+                vipTitle: "⭐ ConnectSphere VIP Member",
+                vipDesc: "You are enjoying VIP status with unlimited global call routing, priority bandwidth, and zero ad interruptions!",
+                vipClose: "Awesome, Close",
+                storyTitle: "Post New Story",
+                publishStoryBtn: "Publish Story",
+                addStoryLabel: "My Status",
+                adTitle: "📢 Sponsored Ad / Token Offer",
+                adDesc: "Watch short video ad to earn free global tokens",
+                adBtn: "Watch Ad"
             },
             bn: {
                 welcome: "স্বাগতম ConnectSphere-এ",
@@ -332,9 +411,9 @@
                 recent: "সাম্প্রতিক কথোপকথন",
                 msgFamily: "অনলাইন - ডাইরেক্ট ফোন কল ও মেম্বারগণ",
                 msgPeer: "কানেকশন ও ডায়াল ম্যানেজ করতে ট্যাপ করুন",
-                statusHead: "স্ট্যাটাস ও চ্যানেল",
-                addStatus: "স্ট্যাটাস যোগ করুন",
-                shareUpdate: "পিয়ারদের সাথে আপডেট শেয়ার করুন",
+                statusHead: "স্ট্যাটাস ও স্টোরি",
+                addStatus: "নতুন স্টোরি / স্ট্যাটাস তৈরি করুন",
+                shareUpdate: "পিয়ারদের সাথে ফটো, ভিডিও বা আপডেট শেয়ার করুন",
                 commHead: "কমিউনিটি",
                 commDesc: "সহজেই টপিক-ভিত্তিক গ্রুপগুলো এক করুন।",
                 startComm: "কমিউনিটি শুরু করুন",
@@ -348,6 +427,7 @@
                 newGroupMenu: "👥 নতুন গ্রুপ / কমিউনিটি",
                 newContactMenu: "👤 নতুন কন্টাক্ট",
                 directDialMenu: "📞 সরাসরি নাম্বার ডায়াল",
+                storyMenu: "📸 স্টোরি / স্ট্যাটাস যোগ করুন",
                 cancelMenu: "বাতিল",
                 addContactTitle: "নতুন কন্টাক্ট যোগ করুন",
                 saveContact: "কন্টাক্ট সেভ করুন",
@@ -361,7 +441,16 @@
                 closeBtn: "বন্ধ করুন",
                 menuBlock: "🚫 কন্টাক্ট ব্লক করুন",
                 menuClear: "🧹 মেসেজ ক্লিয়ার করুন",
-                menuExport: "📥 চ্যাট এক্সপোর্ট করুন"
+                menuExport: "📥 চ্যাট এক্সপোর্ট করুন",
+                vipTitle: "⭐ ConnectSphere ভিআইপি মেম্বার",
+                vipDesc: "আপনি আনলিমিটেড গ্লোবাল কল রাউটিং, প্রায়োরিটি ব্যান্ডউইথ এবং অ্যাড ফ্রি সুবিধা সহ ভিআইপি স্ট্যাটাসে আছেন!",
+                vipClose: "দারুণ, বন্ধ করুন",
+                storyTitle: "নতুন স্টোরি পোস্ট করুন",
+                publishStoryBtn: "স্টোরি প্রকাশ করুন",
+                addStoryLabel: "আমার স্ট্যাটাস",
+                adTitle: "📢 স্পন্সরড অ্যাড / টোকেন অফার",
+                adDesc: "ফ্রি গ্লোবাল টোকেন পেতে ছোট ভিডিও অ্যাড দেখুন",
+                adBtn: "অ্যাড দেখুন"
             },
             ar: {
                 welcome: "مرحباً بك في ConnectSphere",
@@ -370,9 +459,9 @@
                 recent: "المحادثات الأخيرة",
                 msgFamily: "متصل - مكالمة هاتفية مباشرة والأعضاء",
                 msgPeer: "انقر لإدارة الاتصال والطلب",
-                statusHead: "الحالة والقنوات",
-                addStatus: "إضافة حالة",
-                shareUpdate: "شارك التحديثات مع الزملاء",
+                statusHead: "الحالة والقصص",
+                addStatus: "إنشاء قصة / حالة جديدة",
+                shareUpdate: "شارك الصور أو التحديثات مع الزملاء",
                 commHead: "المجتمعات",
                 commDesc: "اجمع المجموعات معاً بسهولة.",
                 startComm: "ابدأ مجتمعك",
@@ -386,6 +475,7 @@
                 newGroupMenu: "👥 مجموعة / مجتمع جديد",
                 newContactMenu: "👤 جهة اتصال جديدة",
                 directDialMenu: "📞 طلب رقم مباشر",
+                storyMenu: "📸 إضافة قصة / حالة",
                 cancelMenu: "إلغاء",
                 addContactTitle: "إضافة جهة اتصال",
                 saveContact: "حفظ جهة الاتصال",
@@ -399,7 +489,16 @@
                 closeBtn: "إغلاق",
                 menuBlock: "🚫 حظر جهة الاتصال",
                 menuClear: "🧹 مسح الرسائل",
-                menuExport: "📥 تصدير الدردشة"
+                menuExport: "📥 تصدير الدردشة",
+                vipTitle: "⭐ عضوية VIP في ConnectSphere",
+                vipDesc: "أنت تستمتع بوضع VIP مع توجيه المكالمات غير المحدود وخلوها من الإعلانات!",
+                vipClose: "إغلاق",
+                storyTitle: "نشر قصة جديدة",
+                publishStoryBtn: "نشر القصة",
+                addStoryLabel: "حالتتي",
+                adTitle: "📢 إعلان ممول / عرض الرموز",
+                adDesc: "شاهد إعلان فيديو قصير لكسب رموز مجانية",
+                adBtn: "شاهد الإعلان"
             }
         };
 
@@ -429,6 +528,7 @@
             document.getElementById('btnNewGroupMenu').innerText = t.newGroupMenu;
             document.getElementById('btnNewContactMenu').innerText = t.newContactMenu;
             document.getElementById('btnDirectDialMenu').innerText = t.directDialMenu;
+            document.getElementById('btnStoryMenu').innerText = t.storyMenu;
             document.getElementById('btnCancelMenu').innerText = t.cancelMenu;
             document.getElementById('txtAddContactTitle').innerText = t.addContactTitle;
             document.getElementById('btnSaveContact').innerText = t.saveContact;
@@ -443,6 +543,17 @@
             document.getElementById('menuBlock').innerText = t.menuBlock;
             document.getElementById('menuClear').innerText = t.menuClear;
             document.getElementById('menuExport').innerText = t.menuExport;
+            
+            // VIP & Story & Ad texts
+            document.getElementById('vipModalTitle').innerText = t.vipTitle;
+            document.getElementById('vipModalDesc').innerText = t.vipDesc;
+            document.getElementById('vipCloseBtn').innerText = t.vipClose;
+            document.getElementById('txtStoryTitle').innerText = t.storyTitle;
+            document.getElementById('btnPublishStory').innerText = t.publishStoryBtn;
+            document.getElementById('txtAddStory').innerText = t.addStoryLabel;
+            document.getElementById('adBannerTitle').innerText = t.adTitle;
+            document.getElementById('adBannerDesc').innerText = t.adDesc;
+            document.getElementById('adBtnText').innerText = t.adBtn;
         }
 
         async function registerUser() {
@@ -488,12 +599,46 @@
             document.getElementById('newGroupModal').classList.add('hidden');
             document.getElementById('chatInfoModal').classList.add('hidden');
             document.getElementById('customModal').classList.add('hidden');
+            document.getElementById('vipModal').classList.add('hidden');
+            document.getElementById('storyModal').classList.add('hidden');
             document.getElementById('menuDropdown').style.display = 'none';
             pendingActionCallback = null;
         }
 
         function openActionMenu() {
             document.getElementById('actionMenuModal').classList.remove('hidden');
+        }
+
+        function openVipModal() {
+            document.getElementById('vipModal').classList.remove('hidden');
+        }
+
+        function openAddStoryModal() {
+            document.getElementById('storyModal').classList.remove('hidden');
+        }
+
+        function viewStory(title, desc) {
+            let lang = document.getElementById('appLanguage').value;
+            alert(lang === 'bn' ? `স্টোরি: ${title}\n${desc}` : `Story: ${title}\n${desc}`);
+        }
+
+        function publishStory() {
+            let caption = document.getElementById('storyCaption').value;
+            let lang = document.getElementById('appLanguage').value;
+
+            let row = document.getElementById('storyRowContainer');
+            let newStory = document.createElement('div');
+            newStory.className = 'story-item';
+            newStory.setAttribute('onclick', `viewStory('My Story', '${caption || 'New status update'}')`);
+            newStory.innerHTML = `
+                <div class="story-ring">
+                    <div class="story-avatar">📸</div>
+                </div>
+                <div class="story-name">Me</div>
+            `;
+            row.appendChild(newStory);
+            closeModal();
+            alert(lang === 'bn' ? 'সফলভাবে স্টোরি প্রকাশিত হয়েছে!' : 'Story published successfully!');
         }
 
         function openNewContactModal() {
@@ -509,10 +654,8 @@
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        // WhatsApp Style Chat Info / Management View
         function openChatInfo(name, number, country) {
             activeChatData = { name, number, country, connectedMembers: activeChatData.connectedMembers || [] };
-            
             document.getElementById('infoChatName').innerText = name;
             renderChatInfoDetails();
             document.getElementById('chatInfoModal').classList.remove('hidden');
@@ -567,7 +710,7 @@
                     callMsg = lang === 'bn' ? `🏠 টোকেন শেষ! তবে লোকাল দেশ হওয়ায় ফ্রি মোডে কল কানেক্ট হচ্ছে: ${number}` : `🏠 Tokens ended! Connecting via free local mode: ${number}`;
                 } else {
                     canCall = false;
-                    callMsg = lang === 'bn' ? `❌ টোকেন শেষ! বাইরের দেশের কলের জন্য কয়েন আইকনে ক্লিক করে টোকেন নিন।` : `❌ Out of tokens! Get tokens by watching ads via coin icon.`;
+                    callMsg = lang === 'bn' ? `❌ টোকেন শেষ! বাইরের দেশের কলের জন্য অ্যাড বা কয়েন আইকনে ক্লিক করে টোকেন নিন।` : `❌ Out of tokens! Get tokens by watching ads.`;
                 }
             }
 
@@ -685,11 +828,11 @@
             let response = await fetch('/api/add-token', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentUser.phone })
+                body: JSON.stringify({ phone: currentUser ? currentUser.phone : '78427384' })
             });
             let data = await response.json();
             if(data.success) {
-                currentUser.tokens = data.tokens;
+                if(currentUser) currentUser.tokens = data.tokens;
                 document.getElementById('tokenCount').innerText = data.tokens;
                 alert(data.message);
             }
@@ -705,4 +848,4 @@
         }
     </script>
 </body>
-                        </html>
+    </html>
