@@ -49,9 +49,9 @@
         /* Floating Action Button (FAB) */
         .fab { position: absolute; bottom: 70px; right: 20px; background: #00a884; color: #111b21; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); cursor: pointer; z-index: 10; }
         
-        /* Modal Popup */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: #222d34; padding: 20px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border: 1px solid #2a3942; }
+        /* Modal & Form Overlay */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: #111b21; padding: 20px; border-radius: 12px; width: 90%; max-width: 380px; border: 1px solid #222d34; max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -90,10 +90,10 @@
             <button id="btnLogin" onclick="registerUser()">Agree & Continue</button>
         </div>
 
-        <!-- Main WhatsApp Interface (Hidden until login) -->
+        <!-- Main WhatsApp Interface -->
         <div id="mainSection" class="hidden" style="display: flex; flex-direction: column; height: 100%; position: relative;">
             
-            <!-- Search Bar (WhatsApp Style) -->
+            <!-- Search Bar -->
             <div class="search-container">
                 <div class="search-wrapper">
                     <span class="search-icon">🔍</span>
@@ -143,7 +143,7 @@
                 <div id="tabContentCommunities" class="tab-pane hidden">
                     <h4 style="color: #00a884; margin-top:0;">Communities</h4>
                     <p style="color: #8696a0; font-size: 13px;">Bring together topic-based groups easily.</p>
-                    <button onclick="alert('Creating new community...')">Start your community</button>
+                    <button onclick="openNewGroupModal()">Start your community</button>
                 </div>
 
                 <!-- 4. CALLS TAB -->
@@ -160,8 +160,8 @@
 
             </div>
 
-            <!-- Floating Action Button (New Contact / Group Modal Trigger) -->
-            <div class="fab" onclick="openNewContactModal()">➕</div>
+            <!-- Floating Action Button (Triggers WhatsApp Style Action Options) -->
+            <div class="fab" onclick="openActionMenu()">➕</div>
 
             <!-- WhatsApp Bottom Navigation Bar -->
             <div class="whatsapp-bottom-nav">
@@ -184,14 +184,43 @@
             </div>
         </div>
 
-        <!-- New Contact / Group Modal -->
-        <div id="contactModal" class="modal hidden">
-            <div class="modal-content">
+        <!-- 1. Action Menu Modal (When clicking + button) -->
+        <div id="actionMenuModal" class="modal hidden">
+            <div class="modal-content" style="text-align: center;">
                 <h3 style="color: #00a884; margin-top:0;">Select Action</h3>
-                <button onclick="alert('New Group created!'); closeModal();">👥 New Group</button>
-                <button onclick="alert('New Community created!'); closeModal();">📢 New Community</button>
-                <button onclick="promptNewNumberCall(); closeModal();">📞 Direct Dial Number</button>
+                <button onclick="closeModal(); openNewGroupModal();">👥 New Group / Community</button>
+                <button onclick="closeModal(); openNewContactModal();">👤 New Contact</button>
+                <button onclick="closeModal(); promptNewNumberCall();">📞 Direct Dial Number</button>
                 <button style="background: #334155; margin-top: 10px;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+
+        <!-- 2. New Contact Form Modal (WhatsApp Style) -->
+        <div id="newContactModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0;">Add New Contact</h3>
+                <input type="text" id="newContactFirstName" placeholder="First name">
+                <input type="text" id="newContactLastName" placeholder="Last name">
+                <select id="newContactCountry">
+                    <option value="om">Oman (+968)</option>
+                    <option value="bd">Bangladesh (+880)</option>
+                    <option value="sa">Saudi Arabia (+966)</option>
+                    <option value="ae">UAE (+971)</option>
+                </select>
+                <input type="tel" id="newContactPhone" placeholder="Phone number">
+                <button onclick="saveNewContact()">Save Contact</button>
+                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+
+        <!-- 3. New Group Form Modal (WhatsApp Style) -->
+        <div id="newGroupModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0;">Create New Group</h3>
+                <input type="text" id="newGroupName" placeholder="Group subject / name">
+                <input type="text" id="newGroupDesc" placeholder="Group description (optional)">
+                <button onclick="saveNewGroup()">Create Group</button>
+                <button style="background: #334155; margin-top: 5px;" onclick="closeModal()">Cancel</button>
             </div>
         </div>
 
@@ -251,12 +280,76 @@
             document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
         }
 
-        function openNewContactModal() {
-            document.getElementById('contactModal').classList.remove('hidden');
+        function closeModal() {
+            document.getElementById('actionMenuModal').classList.add('hidden');
+            document.getElementById('newContactModal').classList.add('hidden');
+            document.getElementById('newGroupModal').classList.add('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('contactModal').classList.add('hidden');
+        function openActionMenu() {
+            document.getElementById('actionMenuModal').classList.remove('hidden');
+        }
+
+        function openNewContactModal() {
+            document.getElementById('newContactModal').classList.remove('hidden');
+        }
+
+        function openNewGroupModal() {
+            document.getElementById('newGroupModal').classList.remove('hidden');
+        }
+
+        function saveNewContact() {
+            let fName = document.getElementById('newContactFirstName').value;
+            let lName = document.getElementById('newContactLastName').value;
+            let phone = document.getElementById('newContactPhone').value;
+            let country = document.getElementById('newContactCountry').value;
+
+            if(!fName || !phone) {
+                alert('দয়া করে নাম এবং ফোন নাম্বার লিখুন!');
+                return;
+            }
+
+            // চ্যাট লিস্টে নতুন কন্টাক্ট যোগ করা
+            let container = document.getElementById('chatListContainer');
+            let newItem = document.createElement('div');
+            newItem.className = 'chat-item';
+            newItem.setAttribute('onclick', `makeCall('${phone}', '${country}')`);
+            newItem.innerHTML = `
+                <div class="chat-avatar" style="background: #14b8a6;">👤</div>
+                <div class="chat-info">
+                    <div class="chat-name">${fName} ${lName}</div>
+                    <div class="chat-msg">Mobile: ${phone} (${country.toUpperCase()})</div>
+                </div>
+            `;
+            container.prepend(newItem);
+            closeModal();
+            alert('সফলভাবে নতুন কন্টাক্ট সেভ করা হয়েছে!');
+        }
+
+        function saveNewGroup() {
+            let gName = document.getElementById('newGroupName').value;
+            let gDesc = document.getElementById('newGroupDesc').value;
+
+            if(!gName) {
+                alert('দয়া করে গ্রুপের নাম দিন!');
+                return;
+            }
+
+            // চ্যাট লিস্টে নতুন গ্রুপ যোগ করা
+            let container = document.getElementById('chatListContainer');
+            let newItem = document.createElement('div');
+            newItem.className = 'chat-item';
+            newItem.setAttribute('onclick', `alert('Opening group: ${gName}')`);
+            newItem.innerHTML = `
+                <div class="chat-avatar" style="background: #8b5cf6;">👥</div>
+                <div class="chat-info">
+                    <div class="chat-name">${gName}</div>
+                    <div class="chat-msg">Group • ${gDesc || 'New community group'}</div>
+                </div>
+            `;
+            container.prepend(newItem);
+            closeModal();
+            alert(`সফলভাবে গ্রুপ "${gName}" তৈরি করা হয়েছে!`);
         }
 
         async function watchAdForToken() {
@@ -273,21 +366,19 @@
             }
         }
 
-        // স্মার্ট কলিং লজিক: টোকেন থাকলে গ্লোবাল/ডাইরেক্ট কল, না থাকলে শুধু লোকাল ফ্রি কল
+        // স্মার্ট কলিং লজিক
         function makeCall(targetNumber, targetCountry) {
             let tokens = parseInt(document.getElementById('tokenCount').innerText);
             
-            // যদি ইউজার লোকাল দেশে কল করে অথবা টোকেন থাকে
             if(tokens > 0) {
                 currentUser.tokens -= 1;
                 document.getElementById('tokenCount').innerText = currentUser.tokens;
-                alert(`🌐 গ্লোবাল ডাইরেক্ট কল কানেক্ট হচ্ছে ${targetNumber} নাম্বারে! (১টি টোকেন কেটে নেওয়া হয়েছে। অডিও/ভয়েস কল মোড)`);
+                alert(`🌐 গ্লোবাল ডাইরেক্ট কল কানেক্ট হচ্ছে ${targetNumber} নাম্বারে! (১টি টোকেন কেটে নেওয়া হয়েছে। অডিও কল মোড)`);
             } else {
-                // টোকেন না থাকলে চেক করবো এটা লোকাল দেশ নাকি
-                if(targetCountry.toLowerCase() === currentUser.country.toLowerCase() || targetCountry === 'Oman') {
+                if(targetCountry.toLowerCase() === currentUser.country.toLowerCase() || targetCountry === 'om') {
                     alert(`🏠 টোকেন শেষ! তবে আপনার লোকাল দেশ (${currentUser.country.toUpperCase()}) হওয়ায় ফ্রি মোডে সরাসরি কল কানেক্ট হচ্ছে!`);
                 } else {
-                    alert(`❌ টোকেন শেষ! বাইরের দেশের বা গ্লোবাল কলের জন্য টোকেন প্রয়োজন। টোকেন পেতে ওপরের কয়েন আইকনে ক্লিক করে অ্যাড দেখুন অথবা ভিআইপি প্যাক কিনুন।`);
+                    alert(`❌ টোকেন শেষ! বাইরের দেশের কলের জন্য টোকেন প্রয়োজন। টোকেন পেতে কয়েন আইকনে ক্লিক করে অ্যাড দেখুন।`);
                 }
             }
         }
