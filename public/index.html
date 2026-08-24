@@ -3,111 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectSphere - Global Messenger</title>
+    <title>ConnectSphere - WhatsApp Style Messenger</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .app-container { width: 100%; max-width: 420px; background: #1e293b; height: 100%; max-height: 850px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b141a; color: #e9edef; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .app-container { width: 100%; max-width: 420px; background: #111b21; height: 100%; max-height: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #222d34; }
         
-        /* হেডার */
-        .app-header { background: #0f766e; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .app-title { font-size: 20px; font-weight: bold; }
-        .lang-select { background: #134e4a; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        /* হোয়াটসঅ্যাপ স্টাইল হেডার */
+        .app-header { background: #202c33; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222d34; }
+        .app-title { font-size: 18px; font-weight: bold; color: #00a884; display: flex; align-items: center; gap: 8px; }
+        .lang-select { background: #2a3942; color: #e9edef; border: none; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+
+        /* ন্যাভ ট্যাব (Chats / Calls) */
+        .whatsapp-tabs { display: flex; background: #202c33; border-bottom: 1px solid #222d34; }
+        .wa-tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: 600; color: #8696a0; cursor: pointer; border-bottom: 3px solid transparent; }
+        .wa-tab.active { color: #00a884; border-bottom: 3px solid #00a884; }
 
         /* বডি কন্টেন্ট */
-        .app-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+        .app-body { padding: 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
         
-        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 15px; box-sizing: border-box; background: #334155; color: #fff; }
-        input::placeholder { color: #94a3b8; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size: 14px; box-sizing: border-box; background: #2a3942; color: #fff; }
+        input::placeholder { color: #8696a0; }
         
-        button { background: #14b8a6; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #0d9488; }
+        button { background: #00a884; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #008f72; }
         
         .hidden { display: none !important; }
         
-        /* ড্যাশবোর্ড / চ্যাট লিস্ট স্টাইল (ইমু/হোয়াটসঅ্যাপ লুক) */
-        .chat-header { display: flex; justify-content: space-between; align-items: center; background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
-        .token-badge { background: #f59e0b; color: #000; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-        .vip-tag { background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px; }
+        /* টোকেন ও ওয়ালেট বার */
+        .wallet-bar { background: #202c33; padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border: 1px solid #2a3942; }
+        .token-badge { background: #ffb703; color: #111b21; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 13px; }
         
-        .contact-list { flex: 1; overflow-y: auto; margin-top: 10px; }
-        .contact-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .contact-item:hover { background: #475569; }
-
-        .ad-btn { background: #f59e0b; color: #000; font-weight: bold; }
-        .router-btn { background: #6366f1; }
-        .call-btn { background: #10b981; }
+        /* চ্যাট লিস্ট (WhatsApp Style) */
+        .chat-list { flex: 1; overflow-y: auto; }
+        .chat-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #222d34; cursor: pointer; }
+        .chat-avatar { width: 45px; height: 45px; background: #00a884; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; margin-right: 12px; color: #111b21; }
+        .chat-info { flex: 1; }
+        .chat-name { font-size: 15px; font-weight: 600; color: #e9edef; }
+        .chat-msg { font-size: 13px; color: #8696a0; margin-top: 2px; }
+        
+        .action-buttons { display: flex; gap: 8px; margin-top: 10px; }
+        .action-buttons button { padding: 8px; font-size: 13px; margin: 0; }
+        
+        .router-btn { background: #3b82f6; }
+        .ad-btn { background: #f59e0b; color: #111b21; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- হেডার (ভাষা পরিবর্তন অপশন সবসময় থাকবে) -->
+        <!-- হেডার -->
         <div class="app-header">
-            <div class="app-title">ConnectSphere <span class="vip-tag">VIP</span></div>
+            <div class="app-title">ConnectSphere <span>💬</span></div>
             <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
                 <option value="bn">বাংলা</option>
                 <option value="en" selected>English</option>
                 <option value="ar">العربية</option>
                 <option value="hi">हिन्दी</option>
                 <option value="ur">اردو</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
             </select>
         </div>
 
-        <div class="app-body">
-            <!-- রেজিস্ট্রেশন ও লগইন পেজ (ইমু/হোয়াটসঅ্যাপ স্টাইল) -->
-            <div id="loginSection">
-                <h3 id="txtWelcome">Welcome to ConnectSphere</h3>
-                <p id="txtSub" style="color: #94a3b8; font-size: 14px;">Enter your details to get 3 Free Tokens.</p>
-                
-                <input type="text" id="name" placeholder="Enter your full name">
-                <input type="date" id="dob" placeholder="Date of Birth">
-                
-                <select id="country">
-                    <option value="om">Oman (+968)</option>
-                    <option value="bd">Bangladesh (+880)</option>
-                    <option value="sa">Saudi Arabia (+966)</option>
-                    <option value="ae">UAE (+971)</option>
-                    <option value="other">Other Country</option>
-                </select>
+        <!-- রেজিস্ট্রেশন স্ক্রিন (প্রবেশদ্বার) -->
+        <div id="loginSection" class="app-body" style="justify-content: center;">
+            <h3 id="txtWelcome" style="color: #00a884; margin-bottom: 5px;">Welcome to ConnectSphere</h3>
+            <p id="txtSub" style="color: #8696a0; font-size: 13px; margin-bottom: 15px;">Enter your details to start messaging & get 3 Free Tokens.</p>
+            
+            <input type="text" id="name" placeholder="Enter your full name">
+            <input type="date" id="dob">
+            
+            <select id="country">
+                <option value="om">Oman (+968)</option>
+                <option value="bd">Bangladesh (+880)</option>
+                <option value="sa">Saudi Arabia (+966)</option>
+                <option value="ae">UAE (+971)</option>
+            </select>
 
-                <input type="tel" id="phone" placeholder="Mobile Number (e.g. 78427384)">
-                
-                <button id="btnLogin" onclick="registerUser()">Start Messaging & Get 3 Tokens</button>
+            <input type="tel" id="phone" placeholder="Mobile Number (e.g. 78427384)">
+            
+            <button id="btnLogin" onclick="registerUser()">Agree & Continue</button>
+        </div>
+
+        <!-- মূল চ্যাট ইন্টারফেস (WhatsApp & Imo Style Dashboard) -->
+        <div id="chatSection" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+            <!-- WhatsApp Tabs -->
+            <div class="whatsapp-tabs">
+                <div class="wa-tab active" id="tabChats" onclick="switchTab('chats')">CHATS</div>
+                <div class="wa-tab" id="tabCalls" onclick="switchTab('calls')">CALLS</div>
             </div>
 
-            <!-- মেইন চ্যাট ও কলিং ড্যাশবোর্ড (ইমু স্টাইল ইন্টারফেস) -->
-            <div id="dashboardSection" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
-                <div class="chat-header">
+            <div class="app-body">
+                <!-- ওয়ালেট ও টোকেন স্ট্যাটাস বার -->
+                <div class="wallet-bar">
                     <div>
-                        <h4 id="userNameDisplay" style="margin:0; color:#38bdf8;">User</h4>
-                        <span id="userCountryDisplay" style="font-size: 12px; color: #94a3b8;">Country: Oman</span>
+                        <div id="profileName" style="font-weight: bold; font-size: 14px; color: #00a884;">User Name</div>
+                        <div id="profileCountry" style="font-size: 11px; color: #8696a0;">Oman</div>
                     </div>
                     <div class="token-badge">🪙 <span id="tokenCount">3</span> Tokens</div>
                 </div>
 
-                <p id="txtCallDesc" style="font-size: 13px; color: #94a3b8; margin: 5px 0;">Local Smart Router & Global Calls:</p>
-                
-                <button class="router-btn" id="btnRouter" onclick="scanLocalRouter()">🔍 Smart Local Scan (Free)</button>
-                <button class="call-btn" id="btnCall" onclick="makeGlobalCall()">📞 Global / Direct Call (Costs 1 Token)</button>
-                <button class="ad-btn" id="btnAd" onclick="watchAdForToken()">⭐ Watch Ad & Earn +1 Token</button>
+                <!-- টোকেন ও রাউটার কন্ট্রোল বাটন -->
+                <div class="action-buttons">
+                    <button class="router-btn" id="btnRouter" onclick="scanLocalRouter()">🔍 Local Scan</button>
+                    <button class="ad-btn" id="btnAd" onclick="watchAdForToken()">⭐ +1 Token (Ad)</button>
+                </div>
 
-                <div style="margin-top: 15px; border-top: 1px solid #334155; padding-top: 10px;">
-                    <span id="txtContactsTitle" style="font-size: 14px; font-weight: bold; color: #cbd5e1;">Recent Contacts / Chats</span>
-                    <div class="contact-list">
-                        <div class="contact-item" onclick="alert('Connecting to Family...')">
-                            <span>👨‍👩‍👧 Family (Home)</span>
-                            <span style="font-size: 12px; color: #10b981;">Online</span>
+                <!-- চ্যাট লিস্ট ট্যাব কন্টেন্ট -->
+                <div id="chatsTabContent" class="chat-list" style="margin-top: 15px;">
+                    <div style="font-size: 12px; color: #8696a0; margin-bottom: 8px;" id="txtRecent">RECENT CONVERSATIONS</div>
+                    
+                    <div class="chat-item" onclick="makeGlobalCall()">
+                        <div class="chat-avatar">👨‍👩‍👧</div>
+                        <div class="chat-info">
+                            <div class="chat-name">Family (Home)</div>
+                            <div class="chat-msg">Online - Tap to call / chat</div>
                         </div>
-                        <div class="contact-item" onclick="alert('Connecting to Local Friend...')">
-                            <span>🤝 Local Friend</span>
-                            <span style="font-size: 12px; color: #10b981;">Online</span>
+                    </div>
+
+                    <div class="chat-item" onclick="makeGlobalCall()">
+                        <div class="chat-avatar" style="background: #3b82f6;">🤝</div>
+                        <div class="chat-info">
+                            <div class="chat-name">Local Community Peer</div>
+                            <div class="chat-msg">Smart Router Matched</div>
                         </div>
                     </div>
                 </div>
 
-                <button style="background: #ef4444; margin-top: 10px;" id="btnLogout" onclick="logout()">Logout</button>
+                <!-- কলস ট্যাব কন্টেন্ট (শুরুতে লুকানো থাকবে) -->
+                <div id="callsTabContent" class="chat-list hidden" style="margin-top: 15px;">
+                    <div style="font-size: 12px; color: #8696a0; margin-bottom: 8px;">CALL LOGS & ROUTER</div>
+                    <div class="chat-item" onclick="makeGlobalCall()">
+                        <div class="chat-avatar" style="background: #e11d48;">📞</div>
+                        <div class="chat-info">
+                            <div class="chat-name">Global Direct Call</div>
+                            <div class="chat-msg">Cost: 1 Token per call</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button style="background: #202c33; color: #ef4444; margin-top: auto; font-size: 13px; padding: 8px;" id="btnLogout" onclick="logout()">Logout</button>
             </div>
         </div>
     </div>
@@ -116,114 +149,20 @@
         let currentUser = null;
 
         const translations = {
-            en: {
-                welcome: "Welcome to ConnectSphere",
-                sub: "Enter your details to get 3 Free Tokens.",
-                namePlaceholder: "Enter your full name",
-                phonePlaceholder: "Mobile Number (e.g. 78427384)",
-                loginBtn: "Start Messaging & Get 3 Tokens",
-                callDesc: "Local Smart Router & Global Calls:",
-                routerBtn: "🔍 Smart Local Scan (Free)",
-                callBtn: "📞 Global / Direct Call (Costs 1 Token)",
-                adBtn: "⭐ Watch Ad & Earn +1 Token",
-                contactsTitle: "Recent Contacts / Chats",
-                logoutBtn: "Logout"
-            },
-            bn: {
-                welcome: "স্বাগতম ConnectSphere-এ",
-                sub: "৩টি ফ্রি টোকেন পেতে আপনার তথ্য দিন।",
-                namePlaceholder: "আপনার পুরো নাম লিখুন",
-                phonePlaceholder: "মোবাইল নাম্বার (যেমন: 78427384)",
-                loginBtn: "শুরু করুন এবং ৩টি টোকেন নিন",
-                callDesc: "স্মার্ট লোকাল রাউটার ও গ্লোবাল কল:",
-                routerBtn: "🔍 স্মার্ট লোকাল স্ক্যান (ফ্রি)",
-                callBtn: "📞 গ্লোবাল / ডাইরেক্ট কল (১ টোকেন কাটবে)",
-                adBtn: "⭐ অ্যাড দেখে ১টি টোকেন ফ্রি নিন",
-                contactsTitle: "সাম্প্রতিক কন্টাক্ট / চ্যাট",
-                logoutBtn: "লগআউট"
-            },
-            ar: {
-                welcome: "مرحباً بك في ConnectSphere",
-                sub: "أدخل بياناتك للحصول على 3 رموز مجانية.",
-                namePlaceholder: "أدخل اسمك الكامل",
-                phonePlaceholder: "رقم الهاتف المحمول",
-                loginBtn: "ابدأ واحصل على 3 رموز",
-                callDesc: "المسح المحلي الذكي والمكالمات:",
-                routerBtn: "🔍 مسح محلي ذكي (مجاني)",
-                callBtn: "📞 مكالمة عالمية (تخصم رمزاً)",
-                adBtn: "⭐ شاهد إعلان واكسب رمزاً (+1)",
-                contactsTitle: "جهات الاتصال الأخيرة",
-                logoutBtn: "تسجيل الخروج"
-            },
-            hi: {
-                welcome: "ConnectSphere में आपका स्वागत है",
-                sub: "3 मुफ्त टोकन पाने के लिए विवरण दर्ज करें।",
-                namePlaceholder: "अपना पूरा नाम दर्ज करें",
-                phonePlaceholder: "मोबाइल नंबर दर्ज करें",
-                loginBtn: "शुरू करें और 3 टोकन पाएं",
-                callDesc: "स्मार्ट लोकल स्कैन और ग्लोबल कॉल:",
-                routerBtn: "🔍 स्मार्ट लोकल स्कैन (मुफ्त)",
-                callBtn: "📞 ग्लोबल कॉल (1 टोकन कटेगा)",
-                adBtn: "⭐ विज्ञापन देखें और 1 टोकन पाएं",
-                contactsTitle: "हाल के संपर्क",
-                logoutBtn: "लॉगआउट"
-            },
-            ur: {
-                welcome: "ConnectSphere میں خوش آمدید",
-                sub: "3 مفت ٹوکن حاصل کرنے کے لیے تفصیلات درج کریں۔",
-                namePlaceholder: "اپنا پورا نام درج کریں",
-                phonePlaceholder: "موبائل نمبر درج کریں",
-                loginBtn: "شروع کریں اور 3 ٹوکن پائیں۔",
-                callDesc: "اسمارٹ لوکل سکین اور گلوبل کال:",
-                routerBtn: "🔍 سمارٹ لوکل سکین (مفت)",
-                callBtn: "📞 گلوبل کال (1 ٹوکن کٹے گا)",
-                adBtn: "⭐ اشتہار دیکھیں اور ٹوکن پائیں",
-                contactsTitle: "حالیہ رابطے",
-                logoutBtn: "لاگ آؤٹ"
-            },
-            es: {
-                welcome: "Bienvenido a ConnectSphere",
-                sub: "Ingresa tus datos para obtener 3 tokens.",
-                namePlaceholder: "Ingresa tu nombre completo",
-                phonePlaceholder: "Número de celular",
-                loginBtn: "Comenzar y obtener 3 tokens",
-                callDesc: "Escaneo local y llamadas globales:",
-                routerBtn: "🔍 Escaneo Local (Gratis)",
-                callBtn: "📞 Llamada Global (1 Token)",
-                adBtn: "⭐ Ver Anuncio y Ganar Token",
-                contactsTitle: "Chats Recientes",
-                logoutBtn: "Cerrar sesión"
-            },
-            fr: {
-                welcome: "Bienvenue sur ConnectSphere",
-                sub: "Entrez vos coordonnées pour 3 jetons.",
-                namePlaceholder: "Entrez votre nom complet",
-                phonePlaceholder: "Numéro de mobile",
-                loginBtn: "Commencer et obtenir 3 jetons",
-                callDesc: "Scan local et appels mondiaux:",
-                routerBtn: "🔍 Scan Local (Gratuit)",
-                callBtn: "📞 Appel Global (1 Jeton)",
-                adBtn: "⭐ Regarder une pub (+1 Jeton)",
-                contactsTitle: "Discussions Récentes",
-                logoutBtn: "Déconnexion"
-            }
+            en: { welcome: "Welcome to ConnectSphere", sub: "Enter your details to start messaging & get 3 Free Tokens.", btnLogin: "Agree & Continue", recent: "RECENT CONVERSATIONS" },
+            bn: { welcome: "স্বাগতম ConnectSphere-এ", sub: "মেসেজিং শুরু করতে এবং ৩টি ফ্রি টোকেন পেতে তথ্য দিন।", btnLogin: "সম্মত হোন ও এগিয়ে যান", recent: "সাম্প্রতিক কথোপকথন" },
+            ar: { welcome: "مرحباً بك في ConnectSphere", sub: "أدخل بياناتك للبدء والحصول على 3 رموز.", btnLogin: "موافقة ومتابعة", recent: "المحادثات الأخيرة" },
+            hi: { welcome: "ConnectSphere में स्वागत है", sub: "मैसेजिंग शुरू करने के लिए विवरण दर्ज करें।", btnLogin: "सहमत और आगे बढ़ें", recent: "हाल की बातचीत" },
+            ur: { welcome: "ConnectSphere میں خوش آمدید", sub: "میسجنگ شروع کرنے کے لیے تفصیلات درج کریں۔", btnLogin: "متفق ہوں اور آگے بڑھیں", recent: "حالیہ بات چیت" }
         };
 
         function changeLanguage() {
             let lang = document.getElementById('appLanguage').value;
             let t = translations[lang] || translations['en'];
-
             document.getElementById('txtWelcome').innerText = t.welcome;
             document.getElementById('txtSub').innerText = t.sub;
-            document.getElementById('name').placeholder = t.namePlaceholder;
-            document.getElementById('phone').placeholder = t.phonePlaceholder;
-            document.getElementById('btnLogin').innerText = t.loginBtn;
-            document.getElementById('txtCallDesc').innerText = t.callDesc;
-            document.getElementById('btnRouter').innerText = t.routerBtn;
-            document.getElementById('btnCall').innerText = t.callBtn;
-            document.getElementById('btnAd').innerText = t.adBtn;
-            document.getElementById('txtContactsTitle').innerText = t.contactsTitle;
-            document.getElementById('btnLogout').innerText = t.logoutBtn;
+            document.getElementById('btnLogin').innerText = t.btnLogin;
+            document.getElementById('txtRecent').innerText = t.recent;
         }
 
         async function registerUser() {
@@ -233,7 +172,7 @@
             let phone = document.getElementById('phone').value;
 
             if(!name || phone.length < 5) {
-                alert('দয়া করে নাম এবং সঠিক মোবাইল নাম্বার দিন!');
+                alert('দয়া করে আপনার নাম এবং সঠিক মোবাইল নাম্বার দিন!');
                 return;
             }
 
@@ -246,14 +185,28 @@
             let data = await response.json();
             if(data.success) {
                 currentUser = data.user;
-                document.getElementById('userNameDisplay').innerText = currentUser.name;
-                document.getElementById('userCountryDisplay').innerText = "Country: " + currentUser.country.toUpperCase();
+                document.getElementById('profileName').innerText = currentUser.name;
+                document.getElementById('profileCountry').innerText = "Country: " + currentUser.country.toUpperCase();
                 document.getElementById('tokenCount').innerText = currentUser.tokens;
                 
                 document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('dashboardSection').classList.remove('hidden');
+                document.getElementById('chatSection').classList.remove('hidden');
             } else {
                 alert(data.message);
+            }
+        }
+
+        function switchTab(tab) {
+            if(tab === 'chats') {
+                document.getElementById('tabChats').classList.add('active');
+                document.getElementById('tabCalls').classList.remove('active');
+                document.getElementById('chatsTabContent').classList.remove('hidden');
+                document.getElementById('callsTabContent').classList.add('hidden');
+            } else {
+                document.getElementById('tabCalls').classList.add('active');
+                document.getElementById('tabChats').classList.remove('active');
+                document.getElementById('callsTabContent').classList.remove('hidden');
+                document.getElementById('chatsTabContent').classList.add('hidden');
             }
         }
 
@@ -288,16 +241,15 @@
                 document.getElementById('tokenCount').innerText = currentUser.tokens;
                 alert('কল কানেক্ট হচ্ছে! (১টি টোকেন কেটে নেওয়া হয়েছে)');
             } else {
-                alert('টোকেন শেষ! গ্লোবাল কল বন্ধ রয়েছে। টোকেন পেতে অ্যাড দেখুন অথবা শুধুমাত্র লোকাল নাম্বারে চ্যাট/কল করুন।');
+                alert('টোকেন শেষ! গ্লোবাল কল বন্ধ রয়েছে। টোকেন বাড়াতে অ্যাড দেখুন অথবা শুধুমাত্র লোকাল নাম্বারে মেসেঞ্জার চ্যাট/কল ব্যবহার করুন।');
             }
         }
 
         function logout() {
             currentUser = null;
-            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
             document.getElementById('loginSection').classList.remove('hidden');
         }
     </script>
-
 </body>
     </html>
