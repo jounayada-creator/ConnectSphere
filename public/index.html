@@ -6,34 +6,39 @@
     <title>ConnectSphere - WhatsApp Style Messenger</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b141a; color: #e9edef; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .app-container { width: 100%; max-width: 420px; background: #111b21; height: 100%; max-height: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #222d34; }
+        .app-container { width: 100%; max-width: 420px; background: #111b21; height: 100%; max-height: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #222d34; position: relative; }
         
-        /* হোয়াটসঅ্যাপ স্টাইল হেডার */
+        /* WhatsApp Header */
         .app-header { background: #202c33; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222d34; }
         .app-title { font-size: 18px; font-weight: bold; color: #00a884; display: flex; align-items: center; gap: 8px; }
-        .lang-select { background: #2a3942; color: #e9edef; border: none; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .token-badge { background: #ffb703; color: #111b21; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .vip-tag { background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .lang-select { background: #2a3942; color: #e9edef; border: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font-size: 12px; }
 
-        /* ন্যাভ ট্যাব (Chats / Calls) */
-        .whatsapp-tabs { display: flex; background: #202c33; border-bottom: 1px solid #222d34; }
-        .wa-tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: 600; color: #8696a0; cursor: pointer; border-bottom: 3px solid transparent; }
-        .wa-tab.active { color: #00a884; border-bottom: 3px solid #00a884; }
+        /* Search Bar Area */
+        .search-container { background: #111b21; padding: 8px 12px; display: flex; align-items: center; border-bottom: 1px solid #222d34; }
+        .search-box { width: 100%; background: #202c33; border: none; padding: 8px 12px 8px 35px; border-radius: 20px; color: #fff; font-size: 14px; outline: none; }
+        .search-wrapper { position: relative; width: 100%; }
+        .search-icon { position: absolute; left: 12px; top: 10px; color: #8696a0; font-size: 14px; }
 
-        /* বডি কন্টেন্ট */
-        .app-body { padding: 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        /* Bottom Navigation (WhatsApp Style 4 Tabs) */
+        .whatsapp-bottom-nav { display: flex; background: #202c33; border-top: 1px solid #222d34; height: 55px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #8696a0; cursor: pointer; gap: 3px; }
+        .nav-item.active { color: #00a884; font-weight: bold; }
+        .nav-item span.icon { font-size: 18px; }
+
+        /* App Body Content */
+        .app-body { padding: 12px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
         
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size: 14px; box-sizing: border-box; background: #2a3942; color: #fff; }
+        input, select, button { width: 100%; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; font-size: 14px; box-sizing: border-box; background: #2a3942; color: #fff; }
         input::placeholder { color: #8696a0; }
-        
-        button { background: #00a884; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button { background: #00a884; color: white; font-weight: bold; cursor: pointer; }
         button:hover { background: #008f72; }
         
         .hidden { display: none !important; }
         
-        /* টোকেন ও ওয়ালেট বার */
-        .wallet-bar { background: #202c33; padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border: 1px solid #2a3942; }
-        .token-badge { background: #ffb703; color: #111b21; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 13px; }
-        
-        /* চ্যাট লিস্ট (WhatsApp Style) */
+        /* Chat List Style */
         .chat-list { flex: 1; overflow-y: auto; }
         .chat-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #222d34; cursor: pointer; }
         .chat-avatar { width: 45px; height: 45px; background: #00a884; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; margin-right: 12px; color: #111b21; }
@@ -41,29 +46,31 @@
         .chat-name { font-size: 15px; font-weight: 600; color: #e9edef; }
         .chat-msg { font-size: 13px; color: #8696a0; margin-top: 2px; }
         
-        .action-buttons { display: flex; gap: 8px; margin-top: 10px; }
-        .action-buttons button { padding: 8px; font-size: 13px; margin: 0; }
+        /* Floating Action Button (FAB) */
+        .fab { position: absolute; bottom: 70px; right: 20px; background: #00a884; color: #111b21; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); cursor: pointer; z-index: 10; }
         
-        .router-btn { background: #3b82f6; }
-        .ad-btn { background: #f59e0b; color: #111b21; }
+        /* Modal Popup */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: #222d34; padding: 20px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border: 1px solid #2a3942; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- হেডার -->
+        <!-- WhatsApp Header -->
         <div class="app-header">
-            <div class="app-title">ConnectSphere <span>💬</span></div>
-            <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
-                <option value="bn">বাংলা</option>
-                <option value="en" selected>English</option>
-                <option value="ar">العربية</option>
-                <option value="hi">हिन्दी</option>
-                <option value="ur">اردو</option>
-            </select>
+            <div class="app-title">ConnectSphere <span class="vip-tag" id="vipStatus">VIP</span></div>
+            <div class="header-right">
+                <div class="token-badge" onclick="watchAdForToken()" title="Click to watch ad & earn token">🪙 <span id="tokenCount">3</span></div>
+                <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
+                    <option value="bn">বাংলা</option>
+                    <option value="en" selected>English</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
         </div>
 
-        <!-- রেজিস্ট্রেশন স্ক্রিন (প্রবেশদ্বার) -->
+        <!-- Registration Screen (Login) -->
         <div id="loginSection" class="app-body" style="justify-content: center;">
             <h3 id="txtWelcome" style="color: #00a884; margin-bottom: 5px;">Welcome to ConnectSphere</h3>
             <p id="txtSub" style="color: #8696a0; font-size: 13px; margin-bottom: 15px;">Enter your details to start messaging & get 3 Free Tokens.</p>
@@ -83,77 +90,120 @@
             <button id="btnLogin" onclick="registerUser()">Agree & Continue</button>
         </div>
 
-        <!-- মূল চ্যাট ইন্টারফেস (WhatsApp & Imo Style Dashboard) -->
-        <div id="chatSection" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
-            <!-- WhatsApp Tabs -->
-            <div class="whatsapp-tabs">
-                <div class="wa-tab active" id="tabChats" onclick="switchTab('chats')">CHATS</div>
-                <div class="wa-tab" id="tabCalls" onclick="switchTab('calls')">CALLS</div>
+        <!-- Main WhatsApp Interface (Hidden until login) -->
+        <div id="mainSection" class="hidden" style="display: flex; flex-direction: column; height: 100%; position: relative;">
+            
+            <!-- Search Bar (WhatsApp Style) -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-box" id="searchBox" placeholder="Ask Meta AI or Search..." onkeyup="filterChats()">
+                </div>
             </div>
 
-            <div class="app-body">
-                <!-- ওয়ালেট ও টোকেন স্ট্যাটাস বার -->
-                <div class="wallet-bar">
-                    <div>
-                        <div id="profileName" style="font-weight: bold; font-size: 14px; color: #00a884;">User Name</div>
-                        <div id="profileCountry" style="font-size: 11px; color: #8696a0;">Oman</div>
-                    </div>
-                    <div class="token-badge">🪙 <span id="tokenCount">3</span> Tokens</div>
-                </div>
-
-                <!-- টোকেন ও রাউটার কন্ট্রোল বাটন -->
-                <div class="action-buttons">
-                    <button class="router-btn" id="btnRouter" onclick="scanLocalRouter()">🔍 Local Scan</button>
-                    <button class="ad-btn" id="btnAd" onclick="watchAdForToken()">⭐ +1 Token (Ad)</button>
-                </div>
-
-                <!-- চ্যাট লিস্ট ট্যাব কন্টেন্ট -->
-                <div id="chatsTabContent" class="chat-list" style="margin-top: 15px;">
+            <!-- Tab Contents Area -->
+            <div class="app-body" style="padding-bottom: 60px;">
+                
+                <!-- 1. CHATS TAB -->
+                <div id="tabContentChats" class="tab-pane">
                     <div style="font-size: 12px; color: #8696a0; margin-bottom: 8px;" id="txtRecent">RECENT CONVERSATIONS</div>
                     
-                    <div class="chat-item" onclick="makeGlobalCall()">
-                        <div class="chat-avatar">👨‍👩‍👧</div>
-                        <div class="chat-info">
-                            <div class="chat-name">Family (Home)</div>
-                            <div class="chat-msg">Online - Tap to call / chat</div>
+                    <div class="chat-list" id="chatListContainer">
+                        <div class="chat-item" onclick="makeCall('+96878427384', 'Oman')">
+                            <div class="chat-avatar">👨‍👩‍👧</div>
+                            <div class="chat-info">
+                                <div class="chat-name">Family (Home)</div>
+                                <div class="chat-msg">Online - Direct Phone Call</div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="chat-item" onclick="makeGlobalCall()">
-                        <div class="chat-avatar" style="background: #3b82f6;">🤝</div>
-                        <div class="chat-info">
-                            <div class="chat-name">Local Community Peer</div>
-                            <div class="chat-msg">Smart Router Matched</div>
+                        <div class="chat-item" onclick="makeCall('+8801817235846', 'Bangladesh')">
+                            <div class="chat-avatar" style="background: #3b82f6;">🤝</div>
+                            <div class="chat-info">
+                                <div class="chat-name">International / Local Peer</div>
+                                <div class="chat-msg">Tap to direct dial phone number</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- কলস ট্যাব কন্টেন্ট (শুরুতে লুকানো থাকবে) -->
-                <div id="callsTabContent" class="chat-list hidden" style="margin-top: 15px;">
-                    <div style="font-size: 12px; color: #8696a0; margin-bottom: 8px;">CALL LOGS & ROUTER</div>
-                    <div class="chat-item" onclick="makeGlobalCall()">
+                <!-- 2. UPDATES TAB -->
+                <div id="tabContentUpdates" class="tab-pane hidden">
+                    <h4 style="color: #00a884; margin-top:0;">Status & Channels</h4>
+                    <div class="chat-item" onclick="alert('Opening status...')">
+                        <div class="chat-avatar" style="background: #8b5cf6;">➕</div>
+                        <div class="chat-info">
+                            <div class="chat-name">Add Status</div>
+                            <div class="chat-msg">Share an update with peers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. COMMUNITIES TAB -->
+                <div id="tabContentCommunities" class="tab-pane hidden">
+                    <h4 style="color: #00a884; margin-top:0;">Communities</h4>
+                    <p style="color: #8696a0; font-size: 13px;">Bring together topic-based groups easily.</p>
+                    <button onclick="alert('Creating new community...')">Start your community</button>
+                </div>
+
+                <!-- 4. CALLS TAB -->
+                <div id="tabContentCalls" class="tab-pane hidden">
+                    <h4 style="color: #00a884; margin-top:0;">Recent Calls</h4>
+                    <div class="chat-item" onclick="makeCall('+96878427384', 'Oman')">
                         <div class="chat-avatar" style="background: #e11d48;">📞</div>
                         <div class="chat-info">
-                            <div class="chat-name">Global Direct Call</div>
-                            <div class="chat-msg">Cost: 1 Token per call</div>
+                            <div class="chat-name">Direct Phone Call Log</div>
+                            <div class="chat-msg">Outgoing voice call (No video)</div>
                         </div>
                     </div>
                 </div>
 
-                <button style="background: #202c33; color: #ef4444; margin-top: auto; font-size: 13px; padding: 8px;" id="btnLogout" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Floating Action Button (New Contact / Group Modal Trigger) -->
+            <div class="fab" onclick="openNewContactModal()">➕</div>
+
+            <!-- WhatsApp Bottom Navigation Bar -->
+            <div class="whatsapp-bottom-nav">
+                <div class="nav-item active" id="navChats" onclick="switchTab('chats')">
+                    <span class="icon">💬</span>
+                    <span>Chats</span>
+                </div>
+                <div class="nav-item" id="navUpdates" onclick="switchTab('updates')">
+                    <span class="icon">🔄</span>
+                    <span>Updates</span>
+                </div>
+                <div class="nav-item" id="navCommunities" onclick="switchTab('communities')">
+                    <span class="icon">👥</span>
+                    <span>Communities</span>
+                </div>
+                <div class="nav-item" id="navCalls" onclick="switchTab('calls')">
+                    <span class="icon">📞</span>
+                    <span>Calls</span>
+                </div>
             </div>
         </div>
+
+        <!-- New Contact / Group Modal -->
+        <div id="contactModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 style="color: #00a884; margin-top:0;">Select Action</h3>
+                <button onclick="alert('New Group created!'); closeModal();">👥 New Group</button>
+                <button onclick="alert('New Community created!'); closeModal();">📢 New Community</button>
+                <button onclick="promptNewNumberCall(); closeModal();">📞 Direct Dial Number</button>
+                <button style="background: #334155; margin-top: 10px;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
         let currentUser = null;
 
         const translations = {
-            en: { welcome: "Welcome to ConnectSphere", sub: "Enter your details to start messaging & get 3 Free Tokens.", btnLogin: "Agree & Continue", recent: "RECENT CONVERSATIONS" },
-            bn: { welcome: "স্বাগতম ConnectSphere-এ", sub: "মেসেজিং শুরু করতে এবং ৩টি ফ্রি টোকেন পেতে তথ্য দিন।", btnLogin: "সম্মত হোন ও এগিয়ে যান", recent: "সাম্প্রতিক কথোপকথন" },
-            ar: { welcome: "مرحباً بك في ConnectSphere", sub: "أدخل بياناتك للبدء والحصول على 3 رموز.", btnLogin: "موافقة ومتابعة", recent: "المحادثات الأخيرة" },
-            hi: { welcome: "ConnectSphere में स्वागत है", sub: "मैसेजिंग शुरू करने के लिए विवरण दर्ज करें।", btnLogin: "सहमत और आगे बढ़ें", recent: "हाल की बातचीत" },
-            ur: { welcome: "ConnectSphere میں خوش آمدید", sub: "میسجنگ شروع کرنے کے لیے تفصیلات درج کریں۔", btnLogin: "متفق ہوں اور آگے بڑھیں", recent: "حالیہ بات چیت" }
+            en: { welcome: "Welcome to ConnectSphere", sub: "Enter your details to start messaging & get 3 Free Tokens.", btnLogin: "Agree & Continue" },
+            bn: { welcome: "স্বাগতম ConnectSphere-এ", sub: "মেসেজিং শুরু করতে এবং ৩টি ফ্রি টোকেন পেতে তথ্য দিন।", btnLogin: "সম্মত হোন ও এগিয়ে যান" },
+            ar: { welcome: "مرحباً بك في ConnectSphere", sub: "أدخل بياناتك للبدء والحصول على 3 رموز.", btnLogin: "موافقة ومتابعة" }
         };
 
         function changeLanguage() {
@@ -162,7 +212,6 @@
             document.getElementById('txtWelcome').innerText = t.welcome;
             document.getElementById('txtSub').innerText = t.sub;
             document.getElementById('btnLogin').innerText = t.btnLogin;
-            document.getElementById('txtRecent').innerText = t.recent;
         }
 
         async function registerUser() {
@@ -185,39 +234,29 @@
             let data = await response.json();
             if(data.success) {
                 currentUser = data.user;
-                document.getElementById('profileName').innerText = currentUser.name;
-                document.getElementById('profileCountry').innerText = "Country: " + currentUser.country.toUpperCase();
                 document.getElementById('tokenCount').innerText = currentUser.tokens;
-                
                 document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('chatSection').classList.remove('hidden');
+                document.getElementById('mainSection').classList.remove('hidden');
             } else {
                 alert(data.message);
             }
         }
 
         function switchTab(tab) {
-            if(tab === 'chats') {
-                document.getElementById('tabChats').classList.add('active');
-                document.getElementById('tabCalls').classList.remove('active');
-                document.getElementById('chatsTabContent').classList.remove('hidden');
-                document.getElementById('callsTabContent').classList.add('hidden');
-            } else {
-                document.getElementById('tabCalls').classList.add('active');
-                document.getElementById('tabChats').classList.remove('active');
-                document.getElementById('callsTabContent').classList.remove('hidden');
-                document.getElementById('chatsTabContent').classList.add('hidden');
-            }
+            ['Chats', 'Updates', 'Communities', 'Calls'].forEach(t => {
+                document.getElementById('tabContent' + t).classList.add('hidden');
+                document.getElementById('nav' + t).classList.remove('active');
+            });
+            document.getElementById('tabContent' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
         }
 
-        async function scanLocalRouter() {
-            let response = await fetch('/api/smart-router', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentUser.phone, country: currentUser.country })
-            });
-            let data = await response.json();
-            alert(data.message);
+        function openNewContactModal() {
+            document.getElementById('contactModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.add('hidden');
         }
 
         async function watchAdForToken() {
@@ -234,21 +273,39 @@
             }
         }
 
-        function makeGlobalCall() {
+        // স্মার্ট কলিং লজিক: টোকেন থাকলে গ্লোবাল/ডাইরেক্ট কল, না থাকলে শুধু লোকাল ফ্রি কল
+        function makeCall(targetNumber, targetCountry) {
             let tokens = parseInt(document.getElementById('tokenCount').innerText);
+            
+            // যদি ইউজার লোকাল দেশে কল করে অথবা টোকেন থাকে
             if(tokens > 0) {
                 currentUser.tokens -= 1;
                 document.getElementById('tokenCount').innerText = currentUser.tokens;
-                alert('কল কানেক্ট হচ্ছে! (১টি টোকেন কেটে নেওয়া হয়েছে)');
+                alert(`🌐 গ্লোবাল ডাইরেক্ট কল কানেক্ট হচ্ছে ${targetNumber} নাম্বারে! (১টি টোকেন কেটে নেওয়া হয়েছে। অডিও/ভয়েস কল মোড)`);
             } else {
-                alert('টোকেন শেষ! গ্লোবাল কল বন্ধ রয়েছে। টোকেন বাড়াতে অ্যাড দেখুন অথবা শুধুমাত্র লোকাল নাম্বারে মেসেঞ্জার চ্যাট/কল ব্যবহার করুন।');
+                // টোকেন না থাকলে চেক করবো এটা লোকাল দেশ নাকি
+                if(targetCountry.toLowerCase() === currentUser.country.toLowerCase() || targetCountry === 'Oman') {
+                    alert(`🏠 টোকেন শেষ! তবে আপনার লোকাল দেশ (${currentUser.country.toUpperCase()}) হওয়ায় ফ্রি মোডে সরাসরি কল কানেক্ট হচ্ছে!`);
+                } else {
+                    alert(`❌ টোকেন শেষ! বাইরের দেশের বা গ্লোবাল কলের জন্য টোকেন প্রয়োজন। টোকেন পেতে ওপরের কয়েন আইকনে ক্লিক করে অ্যাড দেখুন অথবা ভিআইপি প্যাক কিনুন।`);
+                }
             }
         }
 
-        function logout() {
-            currentUser = null;
-            document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
+        function promptNewNumberCall() {
+            let num = prompt("যেকোনো নাম্বার ডায়াল করুন (যেমন: +968xxxxxxx):");
+            if(num) {
+                makeCall(num, 'Global');
+            }
+        }
+
+        function filterChats() {
+            let query = document.getElementById('searchBox').value.toLowerCase();
+            let items = document.getElementsByClassName('chat-item');
+            for(let item of items) {
+                let text = item.innerText.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+            }
         }
     </script>
 </body>
