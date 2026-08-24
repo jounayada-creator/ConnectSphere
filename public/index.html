@@ -3,161 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Emergency & Smart Router App</title>
+    <title>ConnectSphere - Global Messenger</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; text-align: center; padding: 20px; margin: 0; }
-        .card { background: #1e293b; padding: 20px; border-radius: 10px; max-width: 400px; margin: 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; box-sizing: border-box; }
-        button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
-        button:hover { background: #059669; }
-        .hidden { display: none; }
-        .token-box { background: #334155; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 18px; color: #38bdf8; }
-        .ad-btn { background: #f59e0b; }
-        .ad-btn:hover { background: #d97706; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .app-container { width: 100%; max-width: 420px; background: #1e293b; height: 100%; max-height: 850px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* হেডার */
+        .app-header { background: #0f766e; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+        .app-title { font-size: 20px; font-weight: bold; }
+        .lang-select { background: #134e4a; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+        /* বডি কন্টেন্ট */
+        .app-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+        
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 15px; box-sizing: border-box; background: #334155; color: #fff; }
+        input::placeholder { color: #94a3b8; }
+        
+        button { background: #14b8a6; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #0d9488; }
+        
+        .hidden { display: none !important; }
+        
+        /* ড্যাশবোর্ড / চ্যাট লিস্ট স্টাইল (ইমু/হোয়াটসঅ্যাপ লুক) */
+        .chat-header { display: flex; justify-content: space-between; align-items: center; background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .token-badge { background: #f59e0b; color: #000; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+        .vip-tag { background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px; }
+        
+        .contact-list { flex: 1; overflow-y: auto; margin-top: 10px; }
+        .contact-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .contact-item:hover { background: #475569; }
+
+        .ad-btn { background: #f59e0b; color: #000; font-weight: bold; }
         .router-btn { background: #6366f1; }
-        .router-btn:hover { background: #4f46e5; }
-        .lang-select { background: #334155; color: #fff; margin-bottom: 15px; }
+        .call-btn { background: #10b981; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- গ্লোবাল ভাষা নির্বাচন ড্রপডাউন -->
-        <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
-            <option value="bn">বাংলা (Bengali)</option>
-            <option value="en" selected>English</option>
-            <option value="ar">العربية (Arabic)</option>
-            <option value="hi">हिन्दी (Hindi)</option>
-            <option value="ur">اردو (Urdu)</option>
-            <option value="es">Español (Spanish)</option>
-            <option value="fr">Français (French)</option>
-        </select>
-
-        <!-- লগইন সেকশন -->
-        <div id="loginSection">
-            <h2 id="txtWelcome">Welcome to Global Network</h2>
-            <p id="txtSub">Enter your mobile number to get 3 Free Tokens.</p>
-            
-            <select id="country">
-                <option value="om">Oman (+968)</option>
-                <option value="bd">Bangladesh (+880)</option>
-                <option value="other">Other Country</option>
+    <div class="app-container">
+        <!-- হেডার (ভাষা পরিবর্তন অপশন সবসময় থাকবে) -->
+        <div class="app-header">
+            <div class="app-title">ConnectSphere <span class="vip-tag">VIP</span></div>
+            <select id="appLanguage" class="lang-select" onchange="changeLanguage()">
+                <option value="bn">বাংলা</option>
+                <option value="en" selected>English</option>
+                <option value="ar">العربية</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ur">اردو</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
             </select>
-
-            <input type="tel" id="phone" placeholder="Enter your mobile number">
-            
-            <button id="btnLogin" onclick="loginUser()">Login & Get 3 Free Tokens</button>
         </div>
 
-        <!-- মেইন ড্যাশবোর্ড -->
-        <div id="dashboardSection" class="hidden">
-            <h2 id="txtDashboard">Dashboard</h2>
-            <div class="token-box"><span id="txtTokenLabel">Token Balance:</span> <span id="tokenCount">0</span></div>
-            
-            <p id="txtCallDesc">Use tokens for global calls or scan local area.</p>
-            <button id="btnRouter" class="router-btn" onclick="scanLocalRouter()">Smart Local Scan (Free)</button>
-            <button id="btnCall" onclick="makeCall()">Global Call (Costs 1 Token)</button>
-            
-            <button id="btnAd" class="ad-btn" onclick="watchAdForToken()">Watch Ad & Get Token (+1)</button>
-            
-            <button id="btnLogout" style="background: #ef4444;" onclick="logout()">Logout</button>
+        <div class="app-body">
+            <!-- রেজিস্ট্রেশন ও লগইন পেজ (ইমু/হোয়াটসঅ্যাপ স্টাইল) -->
+            <div id="loginSection">
+                <h3 id="txtWelcome">Welcome to ConnectSphere</h3>
+                <p id="txtSub" style="color: #94a3b8; font-size: 14px;">Enter your details to get 3 Free Tokens.</p>
+                
+                <input type="text" id="name" placeholder="Enter your full name">
+                <input type="date" id="dob" placeholder="Date of Birth">
+                
+                <select id="country">
+                    <option value="om">Oman (+968)</option>
+                    <option value="bd">Bangladesh (+880)</option>
+                    <option value="sa">Saudi Arabia (+966)</option>
+                    <option value="ae">UAE (+971)</option>
+                    <option value="other">Other Country</option>
+                </select>
+
+                <input type="tel" id="phone" placeholder="Mobile Number (e.g. 78427384)">
+                
+                <button id="btnLogin" onclick="registerUser()">Start Messaging & Get 3 Tokens</button>
+            </div>
+
+            <!-- মেইন চ্যাট ও কলিং ড্যাশবোর্ড (ইমু স্টাইল ইন্টারফেস) -->
+            <div id="dashboardSection" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="chat-header">
+                    <div>
+                        <h4 id="userNameDisplay" style="margin:0; color:#38bdf8;">User</h4>
+                        <span id="userCountryDisplay" style="font-size: 12px; color: #94a3b8;">Country: Oman</span>
+                    </div>
+                    <div class="token-badge">🪙 <span id="tokenCount">3</span> Tokens</div>
+                </div>
+
+                <p id="txtCallDesc" style="font-size: 13px; color: #94a3b8; margin: 5px 0;">Local Smart Router & Global Calls:</p>
+                
+                <button class="router-btn" id="btnRouter" onclick="scanLocalRouter()">🔍 Smart Local Scan (Free)</button>
+                <button class="call-btn" id="btnCall" onclick="makeGlobalCall()">📞 Global / Direct Call (Costs 1 Token)</button>
+                <button class="ad-btn" id="btnAd" onclick="watchAdForToken()">⭐ Watch Ad & Earn +1 Token</button>
+
+                <div style="margin-top: 15px; border-top: 1px solid #334155; padding-top: 10px;">
+                    <span id="txtContactsTitle" style="font-size: 14px; font-weight: bold; color: #cbd5e1;">Recent Contacts / Chats</span>
+                    <div class="contact-list">
+                        <div class="contact-item" onclick="alert('Connecting to Family...')">
+                            <span>👨‍👩‍👧 Family (Home)</span>
+                            <span style="font-size: 12px; color: #10b981;">Online</span>
+                        </div>
+                        <div class="contact-item" onclick="alert('Connecting to Local Friend...')">
+                            <span>🤝 Local Friend</span>
+                            <span style="font-size: 12px; color: #10b981;">Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button style="background: #ef4444; margin-top: 10px;" id="btnLogout" onclick="logout()">Logout</button>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentUserPhone = '';
-        let currentUserCountry = '';
+        let currentUser = null;
 
         const translations = {
             en: {
-                welcome: "Welcome to Global Network",
-                sub: "Enter your mobile number to get 3 Free Tokens.",
-                phonePlaceholder: "Enter your mobile number",
-                loginBtn: "Login & Get 3 Free Tokens",
-                dashboard: "Dashboard",
-                tokenLabel: "Token Balance:",
-                callDesc: "Use tokens for global calls or scan local area.",
-                routerBtn: "Smart Local Scan (Free)",
-                callBtn: "Global Call (Costs 1 Token)",
-                adBtn: "Watch Ad & Get Token (+1)",
+                welcome: "Welcome to ConnectSphere",
+                sub: "Enter your details to get 3 Free Tokens.",
+                namePlaceholder: "Enter your full name",
+                phonePlaceholder: "Mobile Number (e.g. 78427384)",
+                loginBtn: "Start Messaging & Get 3 Tokens",
+                callDesc: "Local Smart Router & Global Calls:",
+                routerBtn: "🔍 Smart Local Scan (Free)",
+                callBtn: "📞 Global / Direct Call (Costs 1 Token)",
+                adBtn: "⭐ Watch Ad & Earn +1 Token",
+                contactsTitle: "Recent Contacts / Chats",
                 logoutBtn: "Logout"
             },
             bn: {
-                welcome: "স্বাগতম গ্লোবাল নেটওয়ার্কে",
-                sub: "আপনার মোবাইল নাম্বার দিয়ে ৩টি ফ্রি টোকেন নিন।",
-                phonePlaceholder: "আপনার মোবাইল নাম্বার দিন",
-                loginBtn: "লগইন করুন (৩ টোকেন ফ্রি)",
-                dashboard: "ড্যাশবোর্ড",
-                tokenLabel: "টোকেন ব্যালেন্স:",
-                callDesc: "গ্লোবাল কলের জন্য টোকেন ব্যবহার করুন বা লোকাল স্ক্যান করুন।",
-                routerBtn: "স্মার্ট লোকাল স্ক্যান (ফ্রি)",
-                callBtn: "গ্লোবাল কল (১ টোকেন কাটবে)",
-                adBtn: "অ্যাড দেখে টোকেন নিন (+1)",
+                welcome: "স্বাগতম ConnectSphere-এ",
+                sub: "৩টি ফ্রি টোকেন পেতে আপনার তথ্য দিন।",
+                namePlaceholder: "আপনার পুরো নাম লিখুন",
+                phonePlaceholder: "মোবাইল নাম্বার (যেমন: 78427384)",
+                loginBtn: "শুরু করুন এবং ৩টি টোকেন নিন",
+                callDesc: "স্মার্ট লোকাল রাউটার ও গ্লোবাল কল:",
+                routerBtn: "🔍 স্মার্ট লোকাল স্ক্যান (ফ্রি)",
+                callBtn: "📞 গ্লোবাল / ডাইরেক্ট কল (১ টোকেন কাটবে)",
+                adBtn: "⭐ অ্যাড দেখে ১টি টোকেন ফ্রি নিন",
+                contactsTitle: "সাম্প্রতিক কন্টাক্ট / চ্যাট",
                 logoutBtn: "লগআউট"
             },
             ar: {
-                welcome: "مرحباً بك في الشبكة العالمية",
-                sub: "أدخل رقم هاتفك للحصول على 3 رموز مجانية.",
-                phonePlaceholder: "أدخل رقم هاتفك المحمول",
-                loginBtn: "تسجيل الدخول واحصل على 3 رموز",
-                dashboard: "لوحة التحكم",
-                tokenLabel: "رصيد الرموز:",
-                callDesc: "استخدم الرموز للمكالمات أو مسح المنطقة المحلية.",
-                routerBtn: "مسح محلي ذكي (مجاني)",
-                callBtn: "مكالمة عالمية (تخصم رمزاً واحداً)",
-                adBtn: "شاهد إعلان واحصل على رمز (+1)",
+                welcome: "مرحباً بك في ConnectSphere",
+                sub: "أدخل بياناتك للحصول على 3 رموز مجانية.",
+                namePlaceholder: "أدخل اسمك الكامل",
+                phonePlaceholder: "رقم الهاتف المحمول",
+                loginBtn: "ابدأ واحصل على 3 رموز",
+                callDesc: "المسح المحلي الذكي والمكالمات:",
+                routerBtn: "🔍 مسح محلي ذكي (مجاني)",
+                callBtn: "📞 مكالمة عالمية (تخصم رمزاً)",
+                adBtn: "⭐ شاهد إعلان واكسب رمزاً (+1)",
+                contactsTitle: "جهات الاتصال الأخيرة",
                 logoutBtn: "تسجيل الخروج"
             },
             hi: {
-                welcome: "ग्लोबल नेटवर्क में आपका स्वागत है",
-                sub: "3 मुफ्त टोकन पाने के लिए अपना मोबाइल नंबर दर्ज करें।",
-                phonePlaceholder: "अपना मोबाइल नंबर दर्ज करें",
-                loginBtn: "लॉगिन करें और 3 मुफ्त टोकन पाएं",
-                dashboard: "डैशबोर्ड",
-                tokenLabel: "टোকन बैलेंस:",
-                callDesc: "ग्लोबल कॉल के लिए टोकन का उपयोग करें या लोकल स्कैन करें।",
-                routerBtn: "स्मार्ट लोकल स्कैन (मुफ्त)",
-                callBtn: "ग्लोबल कॉल (1 टोकन कटेगा)",
-                adBtn: "विज्ञापन देखें और टोकन पाएं (+1)",
+                welcome: "ConnectSphere में आपका स्वागत है",
+                sub: "3 मुफ्त टोकन पाने के लिए विवरण दर्ज करें।",
+                namePlaceholder: "अपना पूरा नाम दर्ज करें",
+                phonePlaceholder: "मोबाइल नंबर दर्ज करें",
+                loginBtn: "शुरू करें और 3 टोकन पाएं",
+                callDesc: "स्मार्ट लोकल स्कैन और ग्लोबल कॉल:",
+                routerBtn: "🔍 स्मार्ट लोकल स्कैन (मुफ्त)",
+                callBtn: "📞 ग्लोबल कॉल (1 टोकन कटेगा)",
+                adBtn: "⭐ विज्ञापन देखें और 1 टोकन पाएं",
+                contactsTitle: "हाल के संपर्क",
                 logoutBtn: "लॉगआउट"
             },
             ur: {
-                welcome: "گلوبل نیٹ ورک میں خوش آمدید",
-                sub: "3 مفت ٹوکن حاصل کرنے کے لیے اپنا موبائل نمبر درج کریں۔",
-                phonePlaceholder: "اپنا موبائل نمبر درج کریں",
-                loginBtn: "لاگ ان کریں اور 3 مفت ٹوکن پائیں",
-                dashboard: "ڈیش بورڈ",
-                tokenLabel: "ٹوکن بیلنس:",
-                callDesc: "گلوبل کال کے لیے ٹوکن استعمال کریں یا لوکل سکین کریں۔",
-                routerBtn: "سمارٹ لوکل سکین (مفت)",
-                callBtn: "گلوبل کال (1 ٹوکن کٹے گا)",
-                adBtn: "اشتہار دیکھیں اور ٹوکن حاصل کریں (+1)",
+                welcome: "ConnectSphere میں خوش آمدید",
+                sub: "3 مفت ٹوکن حاصل کرنے کے لیے تفصیلات درج کریں۔",
+                namePlaceholder: "اپنا پورا نام درج کریں",
+                phonePlaceholder: "موبائل نمبر درج کریں",
+                loginBtn: "شروع کریں اور 3 ٹوکن پائیں۔",
+                callDesc: "اسمارٹ لوکل سکین اور گلوبل کال:",
+                routerBtn: "🔍 سمارٹ لوکل سکین (مفت)",
+                callBtn: "📞 گلوبل کال (1 ٹوکن کٹے گا)",
+                adBtn: "⭐ اشتہار دیکھیں اور ٹوکن پائیں",
+                contactsTitle: "حالیہ رابطے",
                 logoutBtn: "لاگ آؤٹ"
             },
             es: {
-                welcome: "Bienvenido a la Red Global",
-                sub: "Ingresa tu número para obtener 3 tokens gratis.",
-                phonePlaceholder: "Ingresa tu número de celular",
-                loginBtn: "Iniciar sesión y obtener 3 tokens",
-                dashboard: "Panel",
-                tokenLabel: "Saldo de tokens:",
-                callDesc: "Usa tokens para llamadas o escaneo local.",
-                routerBtn: "Escaneo Local Inteligente (Gratis)",
-                callBtn: "Llamada Global (Cuesta 1 Token)",
-                adBtn: "Ver anuncio y obtener token (+1)",
+                welcome: "Bienvenido a ConnectSphere",
+                sub: "Ingresa tus datos para obtener 3 tokens.",
+                namePlaceholder: "Ingresa tu nombre completo",
+                phonePlaceholder: "Número de celular",
+                loginBtn: "Comenzar y obtener 3 tokens",
+                callDesc: "Escaneo local y llamadas globales:",
+                routerBtn: "🔍 Escaneo Local (Gratis)",
+                callBtn: "📞 Llamada Global (1 Token)",
+                adBtn: "⭐ Ver Anuncio y Ganar Token",
+                contactsTitle: "Chats Recientes",
                 logoutBtn: "Cerrar sesión"
             },
             fr: {
-                welcome: "Bienvenue sur le Réseau Global",
-                sub: "Entrez votre numéro pour 3 jetons gratuits.",
-                phonePlaceholder: "Entrez votre numéro de mobile",
-                loginBtn: "Connexion et 3 jetons gratuits",
-                dashboard: "Tableau de bord",
-                tokenLabel: "Solde de jetons :",
-                callDesc: "Utilisez des jetons pour les appels mondiaux.",
-                routerBtn: "Scan Local Intelligent (Gratuit)",
-                callBtn: "Appel Global (Coûte 1 jeton)",
-                adBtn: "Regarder une pub et gagner un jeton (+1)",
+                welcome: "Bienvenue sur ConnectSphere",
+                sub: "Entrez vos coordonnées pour 3 jetons.",
+                namePlaceholder: "Entrez votre nom complet",
+                phonePlaceholder: "Numéro de mobile",
+                loginBtn: "Commencer et obtenir 3 jetons",
+                callDesc: "Scan local et appels mondiaux:",
+                routerBtn: "🔍 Scan Local (Gratuit)",
+                callBtn: "📞 Appel Global (1 Jeton)",
+                adBtn: "⭐ Regarder une pub (+1 Jeton)",
+                contactsTitle: "Discussions Récentes",
                 logoutBtn: "Déconnexion"
             }
         };
@@ -168,37 +215,41 @@
 
             document.getElementById('txtWelcome').innerText = t.welcome;
             document.getElementById('txtSub').innerText = t.sub;
+            document.getElementById('name').placeholder = t.namePlaceholder;
             document.getElementById('phone').placeholder = t.phonePlaceholder;
             document.getElementById('btnLogin').innerText = t.loginBtn;
-            document.getElementById('txtDashboard').innerText = t.dashboard;
-            document.getElementById('txtTokenLabel').innerText = t.tokenLabel;
             document.getElementById('txtCallDesc').innerText = t.callDesc;
             document.getElementById('btnRouter').innerText = t.routerBtn;
             document.getElementById('btnCall').innerText = t.callBtn;
             document.getElementById('btnAd').innerText = t.adBtn;
+            document.getElementById('txtContactsTitle').innerText = t.contactsTitle;
             document.getElementById('btnLogout').innerText = t.logoutBtn;
         }
 
-        async function loginUser() {
-            let phone = document.getElementById('phone').value;
+        async function registerUser() {
+            let name = document.getElementById('name').value;
+            let dob = document.getElementById('dob').value;
             let country = document.getElementById('country').value;
+            let phone = document.getElementById('phone').value;
 
-            if(phone.length < 5) {
-                alert('দয়া করে সঠিক নাম্বার দিন!');
+            if(!name || phone.length < 5) {
+                alert('দয়া করে নাম এবং সঠিক মোবাইল নাম্বার দিন!');
                 return;
             }
 
-            let response = await fetch('/api/login', {
+            let response = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, country })
+                body: JSON.stringify({ name, dob, country, phone })
             });
 
             let data = await response.json();
             if(data.success) {
-                currentUserPhone = data.user.phone;
-                currentUserCountry = data.user.country;
-                document.getElementById('tokenCount').innerText = data.user.tokens;
+                currentUser = data.user;
+                document.getElementById('userNameDisplay').innerText = currentUser.name;
+                document.getElementById('userCountryDisplay').innerText = "Country: " + currentUser.country.toUpperCase();
+                document.getElementById('tokenCount').innerText = currentUser.tokens;
+                
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
             } else {
@@ -210,9 +261,8 @@
             let response = await fetch('/api/smart-router', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentUserPhone, country: currentUserCountry })
+                body: JSON.stringify({ phone: currentUser.phone, country: currentUser.country })
             });
-
             let data = await response.json();
             alert(data.message);
         }
@@ -221,31 +271,33 @@
             let response = await fetch('/api/add-token', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentUserPhone })
+                body: JSON.stringify({ phone: currentUser.phone })
             });
-
             let data = await response.json();
             if(data.success) {
+                currentUser.tokens = data.tokens;
                 document.getElementById('tokenCount').innerText = data.tokens;
                 alert(data.message);
             }
         }
 
-        function makeCall() {
+        function makeGlobalCall() {
             let tokens = parseInt(document.getElementById('tokenCount').innerText);
             if(tokens > 0) {
-                alert('গ্লোবাল কল কানেক্ট হচ্ছে! (১টি টোকেন কেটে নেওয়া হয়েছে)');
+                currentUser.tokens -= 1;
+                document.getElementById('tokenCount').innerText = currentUser.tokens;
+                alert('কল কানেক্ট হচ্ছে! (১টি টোকেন কেটে নেওয়া হয়েছে)');
             } else {
-                alert('টোকেন শেষ! দয়া করে অ্যাড দেখে টোকেন নিন।');
+                alert('টোকেন শেষ! গ্লোবাল কল বন্ধ রয়েছে। টোকেন পেতে অ্যাড দেখুন অথবা শুধুমাত্র লোকাল নাম্বারে চ্যাট/কল করুন।');
             }
         }
 
         function logout() {
-            currentUserPhone = '';
+            currentUser = null;
             document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('loginSection').classList.remove('hidden');
         }
     </script>
 
 </body>
-  </html>
+    </html>
