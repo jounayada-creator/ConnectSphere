@@ -1,7 +1,7 @@
 {
-  "name": "global-emergency-app",
+  "name": "connect-sphere",
   "version": "1.0.0",
-  "description": "Global Calling & Smart Local Router App",
+  "description": "Global Calling & Smart Local Router App - Imo Style",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
