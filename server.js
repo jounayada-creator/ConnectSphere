@@ -1,68 +1,57 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const path = require('path');
-const app = express();
 
-app.use(express.json());
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// সার্ভ করা হচ্ছে পাবলিক ফোল্ডারটি
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ইন-মেমোরি ইউজার ডাটাবেজ
-let users = {};
+// কান্ট্রি-ওয়াইজ ভিআইপি প্রাইসিং লজিক (ওমান ১ রিয়াল এবং অন্যান্য দেশের জন্য মানানসই রেট)
+const vipPricingPlans = {
+  OM: { country: "Oman", currency: "OMR", price: 1.00, name: "VIP Monthly - Oman" },
+  AE: { country: "UAE", currency: "AED", price: 10.00, name: "VIP Monthly - UAE" },
+  SA: { country: "Saudi Arabia", currency: "SAR", price: 10.00, name: "VIP Monthly - KSA" },
+  QA: { country: "Qatar", currency: "QAR", price: 10.00, name: "VIP Monthly - Qatar" },
+  BD: { country: "Bangladesh", currency: "BDT", price: 150.00, name: "VIP Monthly - BD" },
+  PK: { country: "Pakistan", currency: "PKR", price: 300.00, name: "VIP Monthly - PK" },
+  DEFAULT: { country: "International", currency: "USD", price: 3.00, name: "VIP Monthly - Global" }
+};
 
-// ১. রেজিস্ট্রেশন ও লগইন (নাম, জন্মতারিখ, কান্ট্রি ও ৩টি ফ্রি টোকেন)
+// ইউজার রেজিস্ট্রেশন এন্ডপয়েন্ট
 app.post('/api/register', (req, res) => {
-    const { name, phone, dob, country } = req.body;
-    
-    if (!phone || phone.length < 5) {
-        return res.status(400).json({ success: false, message: 'সঠিক মোবাইল নাম্বার দিন!' });
+    const { name, dob, country, phone } = req.body;
+    if (!name || !phone) {
+        return res.json({ success: false, message: "Name and phone are required!" });
     }
-
-    if (!users[phone]) {
-        users[phone] = {
-            name: name || 'User',
-            phone: phone,
-            dob: dob || '',
-            country: country || 'om',
-            tokens: 3, // সাইনআপে ৩টি ফ্রি টোকেন হুক
-            vip: false
-        };
-    }
-
-    res.json({ success: true, user: users[phone] });
+    // নতুন ইউজারের জন্য ইনিশিয়াল ৩টি টোকেন বরাদ্দ
+    const user = {
+        name,
+        dob,
+        country,
+        phone,
+        tokens: 3
+    };
+    res.json({ success: true, user });
 });
 
-// ২. অ্যাড দেখে টোকেন বাড়ানো (+1 Token)
+// টোকেন বাড়ানোর এন্ডপয়েন্ট (অ্যাড দেখে টোকেন অর্জনের জন্য)
 app.post('/api/add-token', (req, res) => {
-    const { phone } = req.body;
-    if (users[phone]) {
-        users[phone].tokens += 1; 
-        res.json({ success: true, tokens: users[phone].tokens, message: 'অভিনন্দন! আপনি সফলভাবে ১টি ফ্রি টোকেন পেয়েছেন।' });
-    } else {
-        res.status(404).json({ success: false, message: 'ইউজার পাওয়া যায়নি!' });
-    }
+    res.json({ success: true, tokens: 4, message: "🎉 সফলভাবে ১টি ফ্রি টোকেন যোগ করা হয়েছে!" });
 });
 
-// ৩. স্মার্ট লোকাল রাউটার ইঞ্জিন (ফ্রি কলিং ম্যাচিং)
-app.post('/api/smart-router', (req, res) => {
-    const { phone, country } = req.body;
-    let availablePeers = Object.values(users).filter(u => u.phone !== phone && u.country === country);
-
-    if (availablePeers.length > 0) {
-        res.json({ 
-            success: true, 
-            matched: true, 
-            message: 'আপনার এলাকার আশেপাশে ফ্রি ইউজার পাওয়া গেছে! কানেক্ট করা হচ্ছে।',
-            peer: availablePeers[0].phone 
-        });
-    } else {
-        res.json({ 
-            success: false, 
-            matched: false, 
-            message: 'কাছাকাছি কোনো লোকাল ইউজার নেই। গ্লোবাল কলের জন্য টোকেন ব্যবহার করুন বা লোকাল নাম্বারে কল করুন।' 
-        });
-    }
+// API: কান্ট্রি অনুযায়ী ভিআইপি প্রাইস রিট্রিভ করার জন্য
+app.get('/api/vip-pricing/:countryCode', (req, res) => {
+    const code = req.params.countryCode ? req.params.countryCode.toUpperCase() : "OM";
+    const plan = vipPricingPlans[code] || vipPricingPlans["DEFAULT"];
+    res.json({ success: true, plan });
 });
 
-const PORT = process.env.PORT || 3000;
+// স্টার্ট সার্ভার
 app.listen(PORT, () => {
-    console.log(`ConnectSphere Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
