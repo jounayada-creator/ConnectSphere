@@ -4,10 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConnectSphere - WhatsApp Style Messenger</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b141a; color: #e9edef; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .app-container { width: 100%; max-width: 420px; background: #111b21; height: 100%; max-height: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #222d34; position: relative; }
         
+        /* --- SPLASH SCREEN STYLES (Facebook Style Logo) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+        .splash-content { text-align: center; }
+        .splash-logo-circle {
+            width: 85px;
+            height: 85px;
+            background-color: #00a884;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 4px 15px rgba(0, 168, 132, 0.3);
+            animation: scaleUp 0.8s ease;
+        }
+        .splash-logo-circle i { color: #ffffff; font-size: 40px; }
+        .splash-footer {
+            position: absolute;
+            bottom: 45px;
+            width: 100%;
+            text-align: center;
+            color: #65676b;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+        .splash-footer span {
+            display: block;
+            font-weight: bold;
+            font-size: 18px;
+            color: #00a884;
+            margin-top: 3px;
+        }
+        @keyframes scaleUp {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
         /* WhatsApp Header */
         .app-header { background: #202c33; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222d34; }
         .app-title { font-size: 17px; font-weight: bold; color: #00a884; display: flex; align-items: center; gap: 6px; }
@@ -56,6 +108,87 @@
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .story-name { font-size: 11px; color: #e9edef; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 60px; }
 
+        /* --- FACEBOOK STYLE STORY CREATOR SCREEN OVERLAY --- */
+        #facebookStoryCreator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #18191a;
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+        }
+        .story-creator-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #18191a;
+            border-bottom: 1px solid #3a3b3c;
+        }
+        .story-creator-top button { background: none; border: none; color: #b0b3b8; font-size: 20px; cursor: pointer; width: auto; margin: 0; }
+        .story-options-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 5px 0;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .story-options-scroll::-webkit-scrollbar { display: none; }
+        .story-option-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            min-width: 50px;
+        }
+        .story-option-icon {
+            width: 42px;
+            height: 42px;
+            background: #242526;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            border: 1px solid #3a3b3c;
+            margin-bottom: 3px;
+        }
+        .story-option-pill span { font-size: 10px; color: #b0b3b8; }
+
+        .story-gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #18191a;
+        }
+        .story-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            padding: 4px;
+            background: #000;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .story-gallery-thumb {
+            aspect-ratio: 1;
+            background: #242526;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+
         .chat-list { flex: 1; overflow-y: auto; }
         .chat-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #222d34; cursor: pointer; }
         .chat-avatar { width: 45px; height: 45px; background: #00a884; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; margin-right: 12px; color: #111b21; overflow: hidden; flex-shrink: 0; }
@@ -97,6 +230,19 @@
     </style>
 </head>
 <body>
+
+    <!-- 1. SPLASH SCREEN (Facebook / Meta Style Logo Animation) -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo-circle">
+                <i class="fa-solid fa-circle-nodes"></i>
+            </div>
+            <div class="splash-footer">
+                from
+                <span>ConnectSphere</span>
+            </div>
+        </div>
+    </div>
 
     <div class="app-container">
         <!-- WhatsApp Header with Logo -->
@@ -161,9 +307,9 @@
                 <!-- 1. CHATS TAB -->
                 <div id="tabContentChats" class="tab-pane">
                     
-                    <!-- Story / Status Row inside Chats (Triggers Direct Gallery Picker) -->
+                    <!-- Story / Status Row inside Chats (Triggers Facebook Style Story Creator) -->
                     <div class="story-row" id="storyRowContainer">
-                        <div class="story-item" onclick="triggerDirectGalleryStory()">
+                        <div class="story-item" onclick="openFacebookStoryCreator()">
                             <div class="story-ring" style="border: 2px dashed #00a884;">
                                 <div class="story-avatar" id="myStoryAvatarPreview">➕</div>
                             </div>
@@ -183,7 +329,7 @@
                         </div>
                     </div>
 
-                    <!-- Hidden File Input for Direct Gallery triggering on Story click -->
+                    <!-- Hidden File Input for Direct Gallery triggering -->
                     <input type="file" id="directGalleryInput" accept="image/*,video/*" style="display: none;" onchange="handleDirectGalleryUpload(event)">
 
                     <!-- Sponsored Ad Banner Option -->
@@ -219,7 +365,7 @@
                 <!-- 2. UPDATES TAB -->
                 <div id="tabContentUpdates" class="tab-pane hidden">
                     <h4 style="color: #00a884; margin-top:0;" id="txtStatusHead">Status & Stories</h4>
-                    <div class="chat-item" onclick="triggerDirectGalleryStory()">
+                    <div class="chat-item" onclick="openFacebookStoryCreator()">
                         <div class="chat-avatar" style="background: #8b5cf6;">📸</div>
                         <div class="chat-info">
                             <div class="chat-name" id="txtAddStatus">Create New Story / Status</div>
@@ -273,6 +419,56 @@
             </div>
         </div>
 
+        <!-- --- FACEBOOK STYLE STORY CREATOR FULL OVERLAY MODAL --- -->
+        <div id="facebookStoryCreator" class="hidden">
+            <div class="story-creator-top">
+                <button onclick="closeFacebookStoryCreator()"><i class="fas fa-times"></i></button>
+                
+                <div class="story-options-scroll">
+                    <div class="story-option-pill" onclick="alert('Text Story Option Selected')">
+                        <div class="story-option-icon"><i class="fas fa-font"></i></div>
+                        <span>Text</span>
+                    </div>
+                    <div class="story-option-pill" onclick="alert('Music Story Option Selected')">
+                        <div class="story-option-icon"><i class="fas fa-music"></i></div>
+                        <span>Music</span>
+                    </div>
+                    <div class="story-option-pill" onclick="alert('Collage Option Selected')">
+                        <div class="story-option-icon"><i class="fas fa-th-large"></i></div>
+                        <span>Collage</span>
+                    </div>
+                    <div class="story-option-pill" onclick="alert('Templates Option Selected')">
+                        <div class="story-option-icon"><i class="fas fa-magic"></i></div>
+                        <span>Templates</span>
+                    </div>
+                    <div class="story-option-pill" onclick="alert('Boomerang Option Selected')">
+                        <div class="story-option-icon"><i class="fas fa-infinity"></i></div>
+                        <span>Boomerang</span>
+                    </div>
+                </div>
+
+                <button onclick="alert('Story Settings')"><i class="fas fa-cog"></i></button>
+            </div>
+
+            <div class="story-gallery-header">
+                <div style="font-weight: bold; font-size: 15px; cursor: pointer; color: #fff;">
+                    Gallery <i class="fas fa-chevron-down" style="font-size: 11px;"></i>
+                </div>
+                <button style="background: #242526; color: #fff; border: 1px solid #3a3b3c; padding: 5px 12px; border-radius: 20px; font-size: 12px; width: auto; margin: 0;" onclick="document.getElementById('directGalleryInput').click()">
+                    <i class="far fa-check-square"></i> Select multiple
+                </button>
+            </div>
+
+            <div class="story-gallery-grid">
+                <div class="story-gallery-thumb" onclick="triggerDirectGalleryStory()">📸 Photo 1</div>
+                <div class="story-gallery-thumb" onclick="triggerDirectGalleryStory()">📸 Photo 2</div>
+                <div class="story-gallery-thumb" onclick="triggerDirectGalleryStory()">📸 Photo 3</div>
+                <div class="story-gallery-thumb" onclick="triggerDirectGalleryStory()">📸 Photo 4</div>
+                <div class="story-gallery-thumb" onclick="triggerDirectGalleryStory()">📸 Photo 5</div>
+                <div class="story-gallery-thumb" onclick="triggerDirectGalleryStory()">📸 Photo 6</div>
+            </div>
+        </div>
+
         <!-- 1. Action Menu Modal (+) -->
         <div id="actionMenuModal" class="modal hidden">
             <div class="modal-content" style="text-align: center;">
@@ -280,7 +476,7 @@
                 <button onclick="closeModal(); openNewGroupModal();" id="btnNewGroupMenu">👥 New Group / Community</button>
                 <button onclick="closeModal(); openNewContactModal();" id="btnNewContactMenu">👤 New Contact</button>
                 <button onclick="closeModal(); openDirectDialModal();" id="btnDirectDialMenu">📞 Direct Dial Number</button>
-                <button onclick="closeModal(); triggerDirectGalleryStory();" id="btnStoryMenu">📸 Add Story / Status</button>
+                <button onclick="closeModal(); openFacebookStoryCreator();" id="btnStoryMenu">📸 Add Story / Status</button>
                 <button style="background: #334155; margin-top: 10px;" onclick="closeModal()" id="btnCancelMenu">Cancel</button>
             </div>
         </div>
@@ -291,9 +487,7 @@
                 <h3 style="color: #ef4444; margin-top:0;" id="vipModalTitle">⭐ ConnectSphere VIP Plans</h3>
                 <p id="vipModalSub" style="color: #8696a0; font-size: 12px; margin-bottom: 12px;">Select a plan tailored for your country region</p>
                 
-                <div id="vipPlansContainer">
-                    <!-- Dynamic Country Plans injected via JS -->
-                </div>
+                <div id="vipPlansContainer"></div>
 
                 <button style="background: #334155; margin-top: 10px;" onclick="closeModal()" id="vipCloseBtn">Close</button>
             </div>
@@ -307,8 +501,7 @@
                     <div style="cursor: pointer; color: #8696a0; font-size: 18px;" onclick="closeModal()">✕</div>
                 </div>
 
-                <!-- User Profile Header in Settings -->
-                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #2a3942; margin-bottom: 10px; position: relative;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #2a3942; margin-bottom: 10px;">
                     <div id="settingsProfilePicContainer" style="width: 55px; height: 55px; border-radius: 50%; background: #00a884; color: #111b21; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; overflow: hidden; cursor: pointer;" onclick="document.getElementById('profilePicInput').click()" title="Change Profile Picture">
                         👤
                     </div>
@@ -320,7 +513,6 @@
                     </div>
                 </div>
 
-                <!-- Settings Options List -->
                 <div style="max-height: 50vh; overflow-y: auto;">
                     <div class="settings-item" onclick="openVipModal()">
                         <div class="settings-icon">⭐</div>
@@ -329,7 +521,6 @@
                             <p id="stOptVipSub">Manage subscription and global free tokens (<span id="setTokenCountDisp">3</span>)</p>
                         </div>
                     </div>
-
                     <div class="settings-item" onclick="alert('Account Privacy: End-to-end encrypted messaging enabled.')">
                         <div class="settings-icon">🔒</div>
                         <div class="settings-text">
@@ -337,7 +528,6 @@
                             <p id="stOptPrivacySub">Block contacts, disappearing messages</p>
                         </div>
                     </div>
-
                     <div class="settings-item" onclick="alert('Chats Backup & Theme: Dark mode active.')">
                         <div class="settings-icon">💬</div>
                         <div class="settings-text">
@@ -345,7 +535,6 @@
                             <p id="stOptChatsSub">Theme, wallpapers, chat history export</p>
                         </div>
                     </div>
-
                     <div class="settings-item" onclick="alert('Notifications: Enabled for direct calls and peer messages.')">
                         <div class="settings-icon">🔔</div>
                         <div class="settings-text">
@@ -353,15 +542,13 @@
                             <p id="stOptNotifSub">Message, group & call tones</p>
                         </div>
                     </div>
-
-                    <div class="settings-item" onclick="alert('Storage and Data: Optimized for low network consumption in Oman/BD.')">
+                    <div class="settings-item" onclick="alert('Storage and Data: Optimized for low network consumption.')">
                         <div class="settings-icon">📊</div>
                         <div class="settings-text">
                             <h4 id="stOptData">Storage and Data</h4>
                             <p id="stOptDataSub">Network usage, auto-download media</p>
                         </div>
                     </div>
-
                     <div class="settings-item" onclick="alert('Help & Support: ConnectSphere V1.0 Active.')">
                         <div class="settings-icon">❓</div>
                         <div class="settings-text">
@@ -625,6 +812,17 @@
             }
         };
 
+        // Hide Splash Screen after 2 seconds smoothly
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+
         function changeLanguage() {
             let lang = document.getElementById('appLanguage').value;
             let t = translations[lang] || translations['en'];
@@ -702,7 +900,6 @@
             document.getElementById('settingsModal').classList.remove('hidden');
         }
 
-        // Profile Picture Upload Handler
         function updateProfilePicture(event) {
             let file = event.target.files[0];
             if(file) {
@@ -711,11 +908,9 @@
                     let imgSrc = e.target.result;
                     if(currentUser) currentUser.avatar = imgSrc;
                     
-                    // Update Settings Container
                     let container = document.getElementById('settingsProfilePicContainer');
                     container.innerHTML = `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">`;
                     
-                    // Update Story Icon Avatar
                     let storyAvatar = document.getElementById('myStoryAvatarPreview');
                     storyAvatar.innerHTML = `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">`;
                     
@@ -788,7 +983,15 @@
             document.getElementById('actionMenuModal').classList.remove('hidden');
         }
 
-        // Direct Gallery Trigger for Stories (Facebook/WhatsApp style)
+        /* --- Facebook Style Story Creator Handlers --- */
+        function openFacebookStoryCreator() {
+            document.getElementById('facebookStoryCreator').classList.remove('hidden');
+        }
+
+        function closeFacebookStoryCreator() {
+            document.getElementById('facebookStoryCreator').classList.add('hidden');
+        }
+
         function triggerDirectGalleryStory() {
             document.getElementById('directGalleryInput').click();
         }
@@ -802,7 +1005,6 @@
                 reader.onload = function(e) {
                     let mediaUrl = e.target.result;
                     
-                    // Add to Story Row dynamically
                     let row = document.getElementById('storyRowContainer');
                     let newStory = document.createElement('div');
                     newStory.className = 'story-item';
@@ -814,6 +1016,7 @@
                         <div class="story-name">Me</div>
                     `;
                     row.appendChild(newStory);
+                    closeFacebookStoryCreator();
                     alert(lang === 'bn' ? `সফলভাবে গ্যালারি থেকে স্টোরি পোস্ট করা হয়েছে! (${fileName})` : `Story successfully published from gallery! (${fileName})`);
                 }
                 reader.readAsDataURL(file);
@@ -1075,4 +1278,4 @@
         }
     </script>
 </body>
-            </html>
+    </html>
